@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Источники материалов — Midvea Shelter</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08111d;
+      --surface: rgba(13, 27, 39, 0.82);
+      --surface-strong: rgba(18, 35, 49, 0.94);
+      --border: rgba(121, 234, 213, 0.2);
+      --text: #eaf2f4;
+      --muted: #b8c8cd;
+      --accent: #79ead5;
+      --link: #aeb9ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 4%, rgba(121, 234, 213, 0.12), transparent 30rem),
+        radial-gradient(circle at 90% 10%, rgba(137, 123, 255, 0.12), transparent 34rem),
+        var(--bg);
+    }
+
+    main {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 72px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    header img { width: 48px; height: 48px; }
+    h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); }
+    .updated { margin: 5px 0 0; color: var(--muted); }
+
+    section {
+      margin-top: 18px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(18px);
+    }
+
+    h2 { margin: 0 0 14px; color: var(--accent); font-size: 21px; }
+    p, li { color: var(--muted); line-height: 1.6; }
+    ul { margin: 0; padding-left: 22px; }
+    li + li { margin-top: 8px; }
+    a { color: var(--link); text-underline-offset: 3px; }
+    code { color: var(--text); }
+
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .audio-item {
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: var(--surface-strong);
+    }
+
+    .audio-item strong, .audio-item span { display: block; }
+    .audio-item span { margin-top: 4px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+    .notice {
+      border-color: rgba(255, 201, 107, 0.28);
+      background: rgba(50, 37, 20, 0.72);
+    }
+
+    @media (max-width: 720px) {
+      main { padding-top: 28px; }
+      section { padding: 19px; border-radius: 16px; }
+      .audio-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <img src="brand-mark.svg" alt="Логотип Midvea Shelter">
+      <div>
+        <h1>Источники материалов</h1>
+        <p class="updated">Midvea Shelter · обновлено 15 августа 2026 года</p>
+      </div>
+    </header>
+
+    <section>
+      <h2>Собственные материалы</h2>
+      <ul>
+        <li><code>brand-mark.svg</code> — оригинальный знак Midvea Shelter, созданный для проекта.</li>
+        <li><code>icons/icon-16.png</code>, <code>icon-32.png</code>, <code>icon-48.png</code> и <code>icon-128.png</code> — системный набор, экспортированный из оригинального знака.</li>
+        <li>Разметка, стили и JavaScript расширения — самостоятельная реализация проекта.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Внешние сервисы и динамический контент</h2>
+      <ul>
+        <li>Open-Meteo — текущая погода и поиск населённых пунктов. Данные загружаются по запросу и не включены в дистрибутив.</li>
+        <li>Reddit — пользователь выбирает фон из внешней выдачи. Контент не является частью расширения; перед публикацией источники должны быть ограничены материалами с подтверждённой лицензией.</li>
+        <li>Google, Bing, DuckDuckGo и другие поисковые сервисы используются только как выбранные пользователем адресаты поиска.</li>
+        <li>Иконки сайтов загружаются для пользовательских закладок и принадлежат владельцам соответствующих товарных знаков.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Исключённые материалы</h2>
+      <ul>
+        <li>Медиа из референсного расширения не должны включаться в сборку Midvea Shelter.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Звуки виджета «Звуковое пространство»</h2>
+      <p>Проверено 15 августа 2026 года. Файлы распространяются по <a href="https://mixkit.co/license/" target="_blank" rel="noopener noreferrer">Mixkit Free License</a> и хранятся локально, поэтому воспроизведение не требует сети.</p>
+      <div class="audio-grid">
+        <div class="audio-item"><strong>Дождь</strong><span><code>rain.mp3</code> · Mixkit 2393 · <a href="https://mixkit.co/free-sound-effects/rain/">источник</a></span></div>
+        <div class="audio-item"><strong>Океан</strong><span><code>ocean.mp3</code> · Mixkit 1185 · <a href="https://mixkit.co/free-sound-effects/sea/">источник</a></span></div>
+        <div class="audio-item"><strong>Лес</strong><span><code>forest.mp3</code> · Mixkit 1210 · <a href="https://mixkit.co/free-sound-effects/forest/">источник</a></span></div>
+        <div class="audio-item"><strong>Огонь</strong><span><code>fire.mp3</code> · Mixkit 1736 · <a href="https://mixkit.co/free-sound-effects/fire/">источник</a></span></div>
+        <div class="audio-item"><strong>Серверная</strong><span><code>server-room.mp3</code> · Mixkit 2507 · <a href="https://mixkit.co/free-sound-effects/technology/">источник</a></span></div>
+        <div class="audio-item"><strong>Вентилятор</strong><span><code>fan.mp3</code> · Mixkit 1813 · <a href="https://mixkit.co/free-sound-effects/appliances/">источник</a></span></div>
+        <div class="audio-item"><strong>Двигатель</strong><span><code>engine.mp3</code> · Mixkit 2745 · <a href="https://mixkit.co/free-sound-effects/engine/">источник</a></span></div>
+        <div class="audio-item"><strong>Фен</strong><span><code>hair-dryer.mp3</code> · Mixkit 1894 · <a href="https://mixkit.co/free-sound-effects/appliances/">источник</a></span></div>
+        <div class="audio-item"><strong>Нагреватель</strong><span><code>heater.mp3</code> · Mixkit 1831 · <a href="https://mixkit.co/free-sound-effects/appliances/">источник</a></span></div>
+        <div class="audio-item"><strong>Гроза</strong><span><code>thunder.mp3</code> · Mixkit 2402 · <a href="https://mixkit.co/free-sound-effects/thunder/">источник</a></span></div>
+        <div class="audio-item"><strong>Река</strong><span><code>river.mp3</code> · Mixkit 3126 · <a href="https://mixkit.co/free-sound-effects/nature/">источник</a></span></div>
+        <div class="audio-item"><strong>Птицы</strong><span><code>birds.mp3</code> · Mixkit 2472 · <a href="https://mixkit.co/free-sound-effects/birds/">источник</a></span></div>
+        <div class="audio-item"><strong>Ночной лес</strong><span><code>night.mp3</code> · Mixkit 2414 · <a href="https://mixkit.co/free-sound-effects/nature/">источник</a></span></div>
+        <div class="audio-item"><strong>Кафе</strong><span><code>cafe.mp3</code> · Mixkit 444 · <a href="https://mixkit.co/free-sound-effects/restaurant/">источник</a></span></div>
+        <div class="audio-item"><strong>Вокзал</strong><span><code>train.mp3</code> · Mixkit 1634 · <a href="https://mixkit.co/free-sound-effects/train/">источник</a></span></div>
+        <div class="audio-item"><strong>Ночной город</strong><span><code>city.mp3</code> · Mixkit 2678 · <a href="https://mixkit.co/free-sound-effects/city/">источник</a></span></div>
+        <div class="audio-item"><strong>Офис</strong><span><code>office.mp3</code> · Mixkit 447 · <a href="https://mixkit.co/free-sound-effects/public-places/">источник</a></span></div>
+        <div class="audio-item"><strong>Часы</strong><span><code>clock.mp3</code> · Mixkit 1060 · <a href="https://mixkit.co/free-sound-effects/clock/">источник</a></span></div>
+        <div class="audio-item"><strong>Самолёт</strong><span><code>airplane.mp3</code> · Mixkit 1588 · <a href="https://mixkit.co/free-sound-effects/airplane/">источник</a></span></div>
+        <div class="audio-item"><strong>Ветер</strong><span><code>wind.mp3</code> · Mixkit 2658 · <a href="https://mixkit.co/free-sound-effects/nature/">источник</a></span></div>
+      </div>
+      <p>20 вариантов цветного шума генерируются локально с помощью Web Audio API и не используют внешние аудиофайлы.</p>
+    </section>
+
+  </main>
+</body>
+</html>

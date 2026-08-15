@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midvea Shelter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="background-image"></div>
+    <video id="background-video" autoplay loop muted class="hidden"></video>
+    <div id="overlay"></div>
+
+    <!-- Page Viewer Overlay -->
+    <div id="page-viewer-overlay" class="page-viewer hidden">
+        <div class="page-viewer__control-buttons-panel">
+            <span id="page-viewer-title" class="page-viewer__title"></span>
+            <div class="page-viewer__services" aria-label="Быстрые сервисы">
+                <button type="button" data-service-url="https://web.telegram.org/" data-service-name="Telegram">Telegram</button>
+                <button type="button" data-service-url="https://www.notion.so/" data-service-name="Notion">Notion</button>
+                <button type="button" data-service-url="https://open.spotify.com/" data-service-name="Spotify">Spotify</button>
+                <button type="button" data-service-url="https://music.youtube.com/" data-service-name="YouTube Music">YouTube Music</button>
+            </div>
+            <button id="page-viewer-close" class="page-viewer__close-button">✕ Закрыть</button>
+        </div>
+        <iframe id="page-viewer-iframe" class="page-viewer__page" src=""></iframe>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu hidden">
+        <button class="context-menu__item" id="ctx-open">🔗 Открыть</button>
+        <button class="context-menu__item" id="ctx-overlay">🖼️ Открыть в оверлее</button>
+        <button class="context-menu__item" id="ctx-incognito">🕶️ Открыть инкогнито</button>
+        <button class="context-menu__item" id="ctx-edit">✏️ Редактировать</button>
+        <button class="context-menu__item" id="ctx-move">📂 Переместить</button>
+        <div class="context-menu__divider"></div>
+        <button class="context-menu__item context-menu__item--danger" id="ctx-delete">🗑️ Удалить</button>
+    </div>
+
+    <div id="bookmark-tab-menu" class="context-menu hidden">
+        <button class="context-menu__item" id="bookmark-tab-rename">✏️ Переименовать</button>
+        <button class="context-menu__item context-menu__item--danger" id="bookmark-tab-delete">🗑️ Удалить категорию</button>
+    </div>
+    <div id="folder-item-menu" class="context-menu hidden">
+        <button class="context-menu__item" id="folder-item-rename">✏️ Переименовать</button>
+        <button class="context-menu__item context-menu__item--danger" id="folder-item-delete">🗑️ Удалить папку</button>
+    </div>
+
+    <main class="container">
+        <!-- Left Sidebar -->
+        <aside class="left-col">
+            <div class="time-widget">
+                <div class="sidebar__time" id="clock">00:00</div>
+                <div class="sidebar__week" id="date">Понедельник, 1 января</div>
+            </div>
+
+            <div class="widget weather-widget glass-panel" id="weather-widget">
+                <button type="button" id="weather-settings-btn" class="widget__settings-button tooltip" data-tooltip="Настройки погоды" aria-label="Настройки погоды">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                </button>
+                <div class="weather-widget__icon">
+                    <img id="weather-icon" src="" alt="" style="display:none;">
+                </div>
+                <div class="weather-widget__info">
+                    <span id="weather-city" class="weather-widget__city">Загрузка...</span>
+                    <span id="weather-desc" class="weather-widget__info-description">--</span>
+                    <span id="weather-pressure" class="weather-extra">Давление: -- мм.рт.ст.</span>
+                    <span id="weather-humidity" class="weather-extra">Влажность: --%</span>
+                </div>
+                <div class="weather-widget__temp">
+                    <span id="weather-temp-val">--</span><span id="weather-temp-unit">&deg;C</span>
+                </div>
+            </div>
+
+            <div class="widget pomodoro-widget glass-panel" id="pomodoro-widget">
+                <button type="button" id="pomodoro-settings-btn" class="widget__settings-button tooltip" data-tooltip="Настройки Pomodoro" aria-label="Настройки Pomodoro">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.09A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3V9.6h.09A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.5 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.37.35.7.64.96.3.27.68.42 1.08.44H21v4h-.09A1.7 1.7 0 0 0 19.4 15z"></path></svg>
+                </button>
+                <div class="widget__header">
+                    <span class="widget__title">Pomodoro</span>
+                    <span id="pomodoro-rounds" class="pomodoro-widget__rounds" title="Завершённые фокус-сессии">0 сессий</span>
+                </div>
+                <div class="pomodoro-widget__modes" role="group" aria-label="Режим таймера">
+                    <button type="button" class="pomodoro-widget__mode active" data-pomodoro-mode="focus">Фокус</button>
+                    <button type="button" class="pomodoro-widget__mode" data-pomodoro-mode="break">Перерыв</button>
+                </div>
+                <div id="pomodoro-progress" class="pomodoro-widget__progress">
+                    <span id="pomodoro-time" class="pomodoro-widget__time" aria-live="polite">25:00</span>
+                </div>
+                <div class="pomodoro-widget__controls">
+                    <button type="button" id="pomodoro-toggle" class="pomodoro-widget__primary">Старт</button>
+                    <button type="button" id="pomodoro-reset" class="pomodoro-widget__secondary" aria-label="Сбросить таймер">↺</button>
+                </div>
+            </div>
+
+            <div class="widget soundscape-widget glass-panel" id="soundscape-widget">
+                <button type="button" id="soundscape-settings-btn" class="widget__settings-button" aria-label="Настроить звуковое пространство">⚙</button>
+                <div class="widget__header">
+                    <span class="widget__title">ЗВУКОВОЕ ПРОСТРАНСТВО</span>
+                    <span id="soundscape-status" class="soundscape-widget__status">Тишина</span>
+                </div>
+                <span class="soundscape-widget__label">Шумы</span>
+                <div id="soundscape-noise-slots" class="soundscape-widget__grid"></div>
+                <span class="soundscape-widget__label">Атмосфера</span>
+                <div id="soundscape-ambient-slots" class="soundscape-widget__grid"></div>
+                <div class="soundscape-widget__footer">
+                    <input id="soundscape-master-volume" class="soundscape-widget__volume" type="range" min="0" max="100" value="65" aria-label="Общая громкость">
+                    <button type="button" id="soundscape-stop-all" class="soundscape-widget__stop">Стоп</button>
+                </div>
+            </div>
+
+            <div class="widget notes-widget glass-panel" id="notes-widget">
+                <div class="widget__header">
+                    <span class="widget__title">Заметки</span>
+                    <button type="button" id="add-note-btn" class="widget__add-btn" title="Добавить заметку" aria-label="Добавить заметку">+</button>
+                </div>
+                <div class="notes-widget__list" id="notes-list"></div>
+            </div>
+
+            <div class="widget quotes-widget glass-panel" id="quotes-widget">
+                <p id="quote-text" class="quotes-widget__quote">"..."</p>
+                <span id="quote-author" class="quotes-widget__author">— Автор</span>
+                <div class="quotes-widget__categories" id="quote-categories">
+                    <button type="button" class="quotes-widget__category quotes-widget__category_active" data-cat="motivation">Мотивация</button>
+                    <button type="button" class="quotes-widget__category" data-cat="wisdom">Мудрость</button>
+                    <button type="button" class="quotes-widget__category" data-cat="humor">Юмор</button>
+                    <button type="button" class="quotes-widget__category" data-cat="science">Наука</button>
+                </div>
+                <button type="button" id="quote-next-btn" class="quotes-widget__next-button">Следующая →</button>
+            </div>
+        </aside>
+
+        <!-- Center -->
+        <section class="center-col">
+            <header class="shelter-command" aria-label="Midvea Shelter">
+                <div class="shelter-brand">
+                    <img src="brand-mark.svg" alt="" class="shelter-brand__mark">
+                    <span class="shelter-brand__name">Midvea</span>
+                    <span class="shelter-brand__edition">Shelter</span>
+                </div>
+                <button type="button" id="space-accent-btn" class="shelter-command__status" aria-label="Настроить цвет пространства" title="Настроить цвет пространства"><span></span> Локальное пространство</button>
+            </header>
+            <div class="search-row">
+                <div class="google-search-panel">
+                    <form id="search-form">
+                        <div class="search-bar">
+                            <button type="button" id="engine-btn" class="google-search-panel__engine-button">
+                                <img id="engine-icon" src="https://www.google.com/favicon.ico" alt="G" class="google-search-panel__engine-button-image">
+                            </button>
+                            <input type="text" id="search-input" class="google-search-panel__input"
+                                   placeholder="Спросите или введите URL" autofocus autocomplete="off">
+                            <svg class="google-search-panel__icon-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </div>
+                        <div id="engine-menu" class="google-search-panel__engine-menu hidden">
+                            <div class="google-search-panel__engine-header">Поисковик</div>
+                            <div id="engine-list" class="engine-list"></div>
+                        </div>
+                        <ul id="search-suggestions" class="google-search-panel__drop-down hidden"></ul>
+                    </form>
+                </div>
+                <div class="search-actions">
+                    <button class="search-action-btn tooltip" id="chatgpt-btn" data-tooltip="ChatGPT">
+                        <svg width="20" height="20" viewBox="0 0 41 41" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-6.631-3.624 10.079 10.079 0 0 0-10.855 4.836 9.962 9.962 0 0 0-6.631 3.624 10.079 10.079 0 0 0-1.189 11.655 9.964 9.964 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 6.631 3.624 10.079 10.079 0 0 0 10.857-4.835 9.965 9.965 0 0 0 6.63-3.624 10.079 10.079 0 0 0 1.188-11.655zm-17.576 24.623a7.461 7.461 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.504zM4.177 34.096a7.464 7.464 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zM2.402 13.424a7.469 7.469 0 0 1 3.904-3.288c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L4.655 23.86a7.504 7.504 0 0 1-2.253-10.437zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.498v4.997l-4.331 2.5-4.331-2.5V17.804z"/></svg>
+                    </button>
+                    <button class="search-action-btn tooltip" id="gemini-btn" data-tooltip="Gemini">
+                        <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 28C14 26.0633 13.6267 24.2433 12.88 22.54C12.1567 20.8367 11.165 19.355 9.905 18.095C8.645 16.835 7.16333 15.8433 5.46 15.12C3.75667 14.3733 1.93667 14 0 14C1.93667 14 3.75667 13.6383 5.46 12.915C7.16333 12.1683 8.645 11.165 9.905 9.905C11.165 8.645 12.1567 7.16333 12.88 5.46C13.6267 3.75667 14 1.93667 14 0C14 1.93667 14.3617 3.75667 15.085 5.46C15.8317 7.16333 16.835 8.645 18.095 9.905C19.355 11.165 20.8367 12.1683 22.54 12.915C24.2433 13.6383 26.0633 14 28 14C26.0633 14 24.2433 14.3733 22.54 15.12C20.8367 15.8433 19.355 16.835 18.095 18.095C16.835 19.355 15.8317 20.8367 15.085 22.54C14.3617 24.2433 14 26.0633 14 28Z" fill="url(#gemini-gradient)"/><defs><linearGradient id="gemini-gradient" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#4285F4"/><stop offset="50%" stop-color="#9B72CB"/><stop offset="100%" stop-color="#D96570"/></linearGradient></defs></svg>
+                    </button>
+                    <div class="search-actions__divider"></div>
+                    <button class="search-action-btn tooltip" id="google-apps-btn" data-tooltip="Google Apps">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bookmark-tabs-row">
+                <div class="bookmark-tabs" id="bookmark-tabs" aria-label="Категории закладок"></div>
+                <button class="bookmark-tab-add tooltip" id="bookmark-tab-add" data-tooltip="Новая категория" aria-label="Новая категория">+</button>
+                <div class="bookmark-toolbar" aria-label="Управление закладками">
+                    <button type="button" class="bookmark-toolbar__button tooltip" id="bookmark-toolbar-add" data-tooltip="Добавить закладку" aria-label="Добавить закладку">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path><path d="M12 7v6M9 10h6"></path></svg>
+                        <span class="bookmark-toolbar__label">Сайт</span>
+                    </button>
+                    <button type="button" class="bookmark-toolbar__button tooltip" id="bookmark-toolbar-folder" data-tooltip="Создать папку" aria-label="Создать папку">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm9 3v3H9v2h3v3h2v-3h3v-2h-3V8h-2z"></path></svg>
+                        <span class="bookmark-toolbar__label">Папка</span>
+                    </button>
+                    <button type="button" class="bookmark-toolbar__button tooltip" id="bookmark-toolbar-import" data-tooltip="Импорт из HTML" aria-label="Импорт из HTML">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v12h12v-4h2v6H4V4zm9 0h7v7h-2V7.4l-7.3 7.3-1.4-1.4L16.6 6H13V4z"></path></svg>
+                        <span class="bookmark-toolbar__label">Импорт</span>
+                    </button>
+                </div>
+            </div>
+            <div class="draggable-grid" id="shortcuts-grid"></div>
+        </section>
+
+        <!-- Right Dock -->
+        <aside class="dock-col">
+            <div class="dock glass-panel">
+                <button class="dock-btn tooltip" data-action="bookmarks" data-tooltip="Закладки">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                </button>
+                <button class="dock-btn tooltip" data-action="history" data-tooltip="История">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </button>
+                <button class="dock-btn tooltip" data-action="downloads" data-tooltip="Загрузки">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </button>
+                <button class="dock-btn tooltip" data-action="extensions" data-tooltip="Расширения">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                </button>
+                <button class="dock-btn tooltip" id="widgets-btn" data-tooltip="Управление виджетами">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><path d="M17.5 14v7M14 17.5h7"></path></svg>
+                </button>
+                <div class="dock__devider"></div>
+                <button class="dock-btn tooltip" id="dock-add-bookmark-btn" data-tooltip="Добавить закладку">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+      <button class="dock-btn tooltip" id="change-wallpaper-btn" data-tooltip="Сменить фон" aria-label="Сменить фон" type="button">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-15.5-2"></path><polyline points="4 4 4 9 9 9"></polyline><path d="M4 13a8 8 0 0 0 15.5 2"></path><polyline points="20 20 20 15 15 15"></polyline></svg>
+      </button>
+      <button class="dock-btn tooltip" id="gallery-btn" data-tooltip="Галерея фонов" aria-label="Открыть галерею фонов" type="button">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="16" height="14" rx="2"></rect><path d="m3 15 4-4a2 2 0 0 1 3 0l5 5"></path><path d="m14 14 1-1a2 2 0 0 1 3 0l1 1"></path><circle cx="14" cy="9" r="1"></circle><path d="M7 5V3h14v14h-2"></path></svg>
+      </button>
+                <button class="dock-btn tooltip" id="settings-btn" data-tooltip="Настройки">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+                <button class="dock-btn tooltip" id="about-btn" data-tooltip="О Midvea Shelter">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7h.01"></path></svg>
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Google Apps Popup -->
+    <div id="google-apps-modal" class="popup-overlay hidden">
+        <div class="google-apps-grid" id="google-apps-grid"></div>
+    </div>
+
+    <!-- Pomodoro Settings Modal -->
+    <div id="pomodoro-settings-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel pomodoro-settings-content">
+            <button type="button" class="close-modal-btn" id="close-pomodoro-modal">&times;</button>
+            <h2>Pomodoro</h2>
+            <form id="pomodoro-settings-form">
+                <div class="pomodoro-settings-grid">
+                    <label><span>Фокус</span><span><input type="number" id="settings-pomodoro-focus" min="1" max="180" step="1"><small>мин</small></span></label>
+                    <label><span>Короткий перерыв</span><span><input type="number" id="settings-pomodoro-short-break" min="1" max="60" step="1"><small>мин</small></span></label>
+                    <label><span>Длинный перерыв</span><span><input type="number" id="settings-pomodoro-long-break" min="1" max="120" step="1"><small>мин</small></span></label>
+                    <label><span>Сессий в цикле</span><span><input type="number" id="settings-pomodoro-cycles" min="1" max="12" step="1"><small>сесс.</small></span></label>
+                </div>
+                <label class="pomodoro-settings-toggle"><span>Звуковой сигнал</span><input type="checkbox" id="settings-pomodoro-sound" class="app-setting-checkbox"></label>
+                <label class="pomodoro-settings-toggle"><span>Системное уведомление</span><input type="checkbox" id="settings-pomodoro-notifications" class="app-setting-checkbox"></label>
+                <div class="modal-actions-center"><button type="submit" class="btn-primary btn-outline">Сохранить</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="soundscape-settings-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel soundscape-settings-content">
+            <button type="button" id="close-soundscape-modal" class="modal-close" aria-label="Закрыть">×</button>
+            <h2>Звуковое пространство</h2>
+            <form id="soundscape-settings-form">
+                <p class="soundscape-settings-hint">Выберите содержимое восьми кнопок. Все звуки можно смешивать одновременно.</p>
+                <h3>Шумы</h3>
+                <div id="soundscape-noise-settings" class="soundscape-settings-grid"></div>
+                <h3>Атмосфера</h3>
+                <div id="soundscape-ambient-settings" class="soundscape-settings-grid"></div>
+                <div class="soundscape-settings-grid soundscape-settings-grid--controls">
+                    <label>Общая громкость<input id="settings-soundscape-master" type="range" min="0" max="100"></label>
+                    <label>Громкость шумов<input id="settings-soundscape-noise-volume" type="range" min="0" max="100"></label>
+                    <label>Громкость атмосферы<input id="settings-soundscape-ambient-volume" type="range" min="0" max="100"></label>
+                    <label>Таймер<select id="settings-soundscape-timer"><option value="0">Без таймера</option><option value="15">15 минут</option><option value="30">30 минут</option><option value="45">45 минут</option><option value="60">60 минут</option></select></label>
+                </div>
+                <div class="modal-actions"><button type="button" id="cancel-soundscape-settings">Отмена</button><button type="submit" class="btn-primary">Сохранить</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Space Accent Modal -->
+    <div id="space-accent-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel space-accent-content">
+            <button type="button" class="close-modal-btn" id="close-space-accent-modal">&times;</button>
+            <p class="space-accent-kicker">MIDVEA SHELTER</p>
+            <h2>Цвет пространства</h2>
+            <p class="space-accent-description">Выберите спокойный системный акцент. Он изменит активные элементы, подсветку и индикаторы.</p>
+            <div class="space-accent-swatches" id="space-accent-swatches" aria-label="Готовые цвета">
+                <button type="button" data-accent="#65E6CF" style="--swatch:#65E6CF" aria-label="Мятный"></button>
+                <button type="button" data-accent="#69B7FF" style="--swatch:#69B7FF" aria-label="Небесный"></button>
+                <button type="button" data-accent="#858CFF" style="--swatch:#858CFF" aria-label="Индиго"></button>
+                <button type="button" data-accent="#C58BFF" style="--swatch:#C58BFF" aria-label="Лиловый"></button>
+                <button type="button" data-accent="#FF8A68" style="--swatch:#FF8A68" aria-label="Коралловый"></button>
+                <button type="button" data-accent="#F2C96D" style="--swatch:#F2C96D" aria-label="Янтарный"></button>
+                <button type="button" data-accent="#77D982" style="--swatch:#77D982" aria-label="Зелёный"></button>
+            </div>
+            <label class="space-accent-custom"><span>Свой цвет</span><input type="color" id="space-accent-input" value="#65e6cf"></label>
+            <div class="space-accent-preview" aria-hidden="true"><span></span><i></i><b>Активный элемент</b></div>
+            <div class="modal-actions space-accent-actions">
+                <button type="button" id="reset-space-accent-btn" class="btn-cancel">Сбросить</button>
+                <span></span>
+                <button type="button" id="cancel-space-accent-btn" class="btn-cancel">Отмена</button>
+                <button type="button" id="save-space-accent-btn" class="btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div id="gallery-modal" class="modal-overlay hidden">
+        <div class="modal-content gallery-full-modal">
+            <button class="close-modal-btn light-close" id="close-gallery-btn">&times;</button>
+            <h2 class="gallery-title">Галерея</h2>
+            
+            <!-- Tab Content: Gallery -->
+            <div id="gallery-tab-content" class="gallery-tab-pane active">
+                <div class="gallery-categories-wrapper">
+                    <button type="button" class="gallery-categories-nav gallery-categories-nav--prev" aria-label="Предыдущие категории">‹</button>
+                    <div class="gallery-categories-scroll" tabindex="0" aria-label="Категории обоев">
+                            <button class="gallery-cat-pill active" data-source="reddit">Все</button>
+                            <button class="gallery-cat-pill" data-source="LivingBackgrounds">Анимации</button>
+                            <button class="gallery-cat-pill" data-source="EarthPorn">Природа</button>
+                            <button class="gallery-cat-pill" data-source="SpacePorn">Космос</button>
+                            <button class="gallery-cat-pill" data-source="CityPorn">Города</button>
+                            <button class="gallery-cat-pill" data-source="ArchitecturePorn">Архитектура</button>
+                            <button class="gallery-cat-pill" data-source="minimalwallpaper">Минимализм</button>
+                            <button class="gallery-cat-pill" data-source="Amoledbackgrounds">AMOLED</button>
+                            <button class="gallery-cat-pill" data-source="GamingWallpapers">Игры</button>
+                            <button class="gallery-cat-pill" data-source="Animewallpaper">Аниме</button>
+                            <button class="gallery-cat-pill" data-source="carporn">Автомобили</button>
+                            <button class="gallery-cat-pill" data-source="AnimalPorn">Животные</button>
+                            <button class="gallery-cat-pill" data-source="TravelPorn">Путешествия</button>
+                    </div>
+                    <button type="button" class="gallery-categories-nav gallery-categories-nav--next" aria-label="Следующие категории">›</button>
+                </div>
+                <div class="gallery-header-row">
+                    <h3 class="gallery-current-cat-title" id="gallery-current-cat-title">Все</h3>
+                    <label class="gallery-rotate-label">
+                        <input type="checkbox" id="gallery-rotate-checkbox" hidden>
+                        <span class="rotate-text">Чередовать обои</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </label>
+                </div>
+                <div class="gallery-grid" id="gallery-grid">
+                    <div class="gallery-grid-placeholder">Загрузка обоев...</div>
+                </div>
+            </div>
+
+            <!-- Tab Content: My Wallpapers -->
+            <div id="my-wallpapers-tab-content" class="gallery-tab-pane">
+                <h3 class="gallery-tab-title">Мои обои</h3>
+                <div class="my-wallpapers-actions">
+                    <label class="upload-btn">
+                        <input type="file" id="upload-wallpaper-input" accept="image/png, image/jpeg, image/webp" hidden>
+                        <div class="upload-btn-content">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Загрузить изображение
+                        </div>
+                        <span class="upload-hint">.png, .jpg, .webp</span>
+                    </label>
+                    <label class="upload-btn">
+                        <input type="file" id="upload-video-input" accept="video/mp4, video/webm, image/gif" hidden>
+                        <div class="upload-btn-content">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Живые обои
+                        </div>
+                        <span class="upload-hint">.mp4, .webm, .gif</span>
+                    </label>
+                </div>
+                <div class="gallery-grid" id="my-wallpapers-grid">
+                    <div class="gallery-grid-placeholder">Список собственных обоев пуст</div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Favorites -->
+            <div id="favorites-tab-content" class="gallery-tab-pane">
+                <h3 class="gallery-tab-title">Избранное</h3>
+                <div class="gallery-grid" id="favorites-grid">
+                    <div class="gallery-grid-placeholder">Список избранных обоев пуст</div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Settings -->
+            <div id="settings-tab-content" class="gallery-tab-pane">
+                <div class="gallery-settings-layout">
+                    <div class="gallery-settings-preview">
+                        <img src="" id="settings-current-wallpaper" alt="">
+                        <video src="" id="settings-current-video" muted preload="metadata" class="hidden" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"></video>
+                        <div class="settings-wallpaper-info">
+                            <div class="settings-wallpaper-title" id="settings-wp-title">Текущие обои</div>
+                            <div class="settings-wallpaper-author" id="settings-wp-author">от: система</div>
+                        </div>
+                    </div>
+                    <div class="gallery-settings-controls">
+                        <h3 style="font-weight: 500; margin-bottom: 20px;">Настройки</h3>
+                        <div class="settings-control-row">
+                            <span style="font-size: 14px; font-weight: 500;">Чередовать обои ежедневно</span>
+                            <label class="switch">
+                                <input type="checkbox" id="settings-rotate-daily" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="settings-radio-group">
+                            <label class="radio-label"><input type="radio" name="wp_type" value="video" disabled> <span>Видео</span></label>
+                            <label class="radio-label"><input type="radio" name="wp_type" value="image" checked> <span>Картинка</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Tab Bar -->
+            <div class="gallery-tab-bar">
+                <button class="gallery-tab-btn active" data-tab="gallery-tab-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span>Галерея</span>
+                </button>
+                <button class="gallery-tab-btn" data-tab="my-wallpapers-tab-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span>Мои обои</span>
+                </button>
+                <button class="gallery-tab-btn" data-tab="favorites-tab-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Избранное</span>
+                </button>
+                <button class="gallery-tab-btn" data-tab="settings-tab-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Настройки</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bookmark Modal -->
+    <div id="add-bookmark-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal">
+            <button type="button" class="close-modal-btn light-close" id="close-add-bm-btn">&times;</button>
+            <h2 class="light-title">Добавить закладку</h2>
+            <form id="add-bookmark-form">
+                <div class="add-bm-body">
+                    <div class="add-bm-icon-section">
+                        <div class="add-bm-preview-wrapper">
+                            <div class="add-bm-preview" id="add-bm-icon-preview"></div>
+                        </div>
+                        <div class="modal-icon-actions">
+                            <button type="button" class="modal-icon-btn" id="add-upload-icon-btn" title="Загрузить свою иконку">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </button>
+                            <div class="color-btn-wrapper">
+                                <button type="button" class="modal-icon-btn" title="Изменить цвет">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.53-.21-1.04-.59-1.41C13.54 17.72 13.34 17.22 13.62 16.5c.34-.84 1.16-1.5 2.1-1.5h1.78c2.48 0 4.5-2.02 4.5-4.5 0-4.69-4.26-8.5-9.5-8.5z"/></svg>
+                                </button>
+                                <input type="color" id="add-color-icon-input" class="modal-color-input" value="#5C6BC0">
+                            </div>
+                            <button type="button" class="modal-icon-btn" id="add-search-icon-btn" title="Найти иконку в сети">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="add-icon-file-input" accept="image/*" style="display:none">
+                    <div class="add-bm-inputs">
+                        <input type="text" id="bm-title" placeholder="Название" required class="material-input">
+                        <input type="text" id="bm-url" placeholder="URL" required inputmode="url" class="material-input">
+                    </div>
+                </div>
+                <div class="add-bm-footer">
+                    <button type="button" id="btn-cancel-bm" class="btn-text">ОТМЕНА</button>
+                    <button type="submit" class="btn-text">СОХРАНИТЬ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Remove Bookmark Modal -->
+    <div id="remove-bookmark-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal remove-bookmark-content">
+            <button type="button" class="close-modal-btn light-close" id="close-remove-bm-btn">&times;</button>
+            <div class="remove-bookmark-preview" id="remove-bookmark-preview">?</div>
+            <h2 class="light-title">Удалить закладку?</h2>
+            <p id="remove-bookmark-message" class="remove-bookmark-message"></p>
+            <div class="modal-actions">
+                <button type="button" id="cancel-remove-bm-btn" class="btn-cancel">Отмена</button>
+                <button type="button" id="confirm-remove-bm-btn" class="btn-primary remove-confirm-button">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Move Bookmark Modal -->
+    <div id="move-bookmark-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal move-bookmark-content">
+            <button type="button" class="close-modal-btn light-close" id="close-move-bm-btn">&times;</button>
+            <h2 class="light-title">Переместить закладку</h2>
+            <p id="move-bookmark-message" class="move-bookmark-message"></p>
+            <label class="move-bookmark-search" for="move-bookmark-search-input">
+                <span class="move-bookmark-search-icon" aria-hidden="true">⌕</span>
+                <input id="move-bookmark-search-input" type="search" placeholder="Найти папку…" autocomplete="off">
+            </label>
+            <div id="move-bookmark-tree" class="move-bookmark-tree" role="tree" aria-label="Папка назначения"></div>
+            <p id="move-bookmark-empty" class="move-bookmark-empty hidden">Подходящих папок нет.</p>
+            <p id="move-bookmark-status" class="move-bookmark-status" aria-live="polite"></p>
+            <div class="modal-actions">
+                <button type="button" id="cancel-move-bm-btn" class="btn-cancel">Отмена</button>
+                <button type="button" id="confirm-move-bm-btn" class="btn-primary" disabled>Переместить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Folder Grid -->
+    <div id="folder-grid-modal" class="modal-overlay hidden">
+        <section class="folder-grid-dialog light-modal" role="dialog" aria-modal="true" aria-labelledby="folder-grid-title">
+            <header class="folder-grid-header">
+                <button type="button" id="folder-grid-back" class="folder-grid-back" aria-label="Назад">←</button>
+                <div class="folder-grid-heading">
+                    <span class="folder-grid-kicker">Папка</span>
+                    <h2 id="folder-grid-title">Закладки</h2>
+                    <div id="folder-grid-path" class="folder-grid-path"></div>
+                </div>
+                <div class="folder-grid-actions">
+                    <button type="button" id="folder-grid-add-site">+ Сайт</button>
+                    <button type="button" id="folder-grid-add-folder">+ Папка</button>
+                </div>
+                <button type="button" id="folder-grid-close" class="close-modal-btn light-close" aria-label="Закрыть">&times;</button>
+            </header>
+            <div id="folder-grid-content" class="folder-grid-content"></div>
+            <p id="folder-grid-empty" class="folder-grid-empty hidden">В этой папке пока ничего нет.</p>
+        </section>
+    </div>
+
+    <!-- Edit Bookmark Modal -->
+    <div id="edit-bookmark-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal">
+            <button type="button" class="close-modal-btn light-close" id="close-edit-bm-btn">&times;</button>
+            <h2 class="light-title">&#x0420;&#x0435;&#x0434;&#x0430;&#x043a;&#x0442;&#x0438;&#x0440;&#x043e;&#x0432;&#x0430;&#x0442;&#x044c; &#x0437;&#x0430;&#x043a;&#x043b;&#x0430;&#x0434;&#x043a;&#x0443;</h2>
+            <form id="edit-bookmark-form">
+                <div class="add-bm-body">
+                    <div class="add-bm-icon-section">
+                        <div class="add-bm-preview-wrapper">
+                            <div class="add-bm-preview" id="icon-edit-preview"></div>
+                        </div>
+                        <div class="modal-icon-actions">
+                            <button type="button" class="modal-icon-btn" id="edit-upload-icon-btn" title="&#x0417;&#x0430;&#x0433;&#x0440;&#x0443;&#x0437;&#x0438;&#x0442;&#x044c; &#x0438;&#x043a;&#x043e;&#x043d;&#x043a;&#x0443;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </button>
+                            <div class="color-btn-wrapper">
+                                <button type="button" class="modal-icon-btn" title="&#x0412;&#x044b;&#x0431;&#x0440;&#x0430;&#x0442;&#x044c; &#x0446;&#x0432;&#x0435;&#x0442;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.53-.21-1.04-.59-1.41C13.54 17.72 13.34 17.22 13.62 16.5c.34-.84 1.16-1.5 2.1-1.5h1.78c2.48 0 4.5-2.02 4.5-4.5 0-4.69-4.26-8.5-9.5-8.5z"/></svg>
+                                </button>
+                                <input type="color" id="custom-color-picker" class="modal-color-input" value="#5C6BC0">
+                            </div>
+                            <button type="button" class="modal-icon-btn" id="edit-search-icon-btn" title="&#x041f;&#x043e;&#x0438;&#x0441;&#x043a; &#x0438;&#x043a;&#x043e;&#x043d;&#x043a;&#x0438;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="icon-file-input" accept="image/*" style="display:none">
+                    <div class="add-bm-inputs">
+                        <input type="hidden" id="edit-bm-id">
+                        <input type="text" id="edit-bm-title" placeholder="&#x041d;&#x0430;&#x0437;&#x0432;&#x0430;&#x043d;&#x0438;&#x0435;" required class="material-input">
+                        <input type="text" id="edit-bm-url" placeholder="URL" required inputmode="url" class="material-input">
+                    </div>
+                </div>
+                <div class="add-bm-footer" style="display: flex; justify-content: space-between;">
+                    <button type="button" id="btn-delete-bm" class="btn-text btn-danger">&#x0423;&#x0414;&#x0410;&#x041b;&#x0418;&#x0422;&#x042c;</button>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" id="btn-cancel-edit-bm" class="btn-text">&#x041e;&#x0422;&#x041c;&#x0415;&#x041d;&#x0410;</button>
+                        <button type="submit" class="btn-text">&#x0421;&#x041e;&#x0425;&#x0420;&#x0410;&#x041d;&#x0418;&#x0422;&#x042c;</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Weather Settings Modal -->
+    <div id="weather-settings-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel weather-settings-content">
+            <button type="button" class="close-modal-btn" id="close-weather-modal">&times;</button>
+            <h2>&#x041f;&#x043e;&#x0433;&#x043e;&#x0434;&#x0430;</h2>
+            <form id="weather-settings-form">
+                <div class="settings-row">
+                    <label>&#x0415;&#x0434;&#x0438;&#x043d;&#x0438;&#x0446;&#x044b;:</label>
+                    <div class="toggle-switch">
+                        <input type="radio" id="unit-f" name="weather-unit" value="imperial">
+                        <label for="unit-f">&deg;F</label>
+                        <input type="radio" id="unit-c" name="weather-unit" value="metric" checked>
+                        <label for="unit-c">&deg;C</label>
+                        <div class="toggle-bg"></div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <label for="weather-location-input">&#x0413;&#x043e;&#x0440;&#x043e;&#x0434;:</label>
+                    <div class="location-input-wrapper">
+                        <input type="text" id="weather-location-input" placeholder="&#x0413;&#x043e;&#x0440;&#x043e;&#x0434;" autocomplete="off">
+                        <button type="button" id="weather-geo-btn" class="tooltip" data-tooltip="&#x0413;&#x0435;&#x043e;&#x043f;&#x043e;&#x0437;&#x0438;&#x0446;&#x0438;&#x044f;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                        <ul id="weather-city-suggestions" class="city-suggestions hidden"></ul>
+                    </div>
+                </div>
+                <div class="modal-actions-center">
+                    <button type="submit" class="btn-primary btn-outline">&#x0421;&#x043e;&#x0445;&#x0440;&#x0430;&#x043d;&#x0438;&#x0442;&#x044c;</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Search Modal -->
+    <div id="image-search-modal" class="modal-overlay hidden" style="z-index: 1000;">
+        <div class="modal-content light-modal" style="max-width: 600px; width: 95%;">
+            <button type="button" class="close-modal-btn light-close" id="close-image-search-btn">&times;</button>
+            <h2 class="light-title">&#x041f;&#x043e;&#x0438;&#x0441;&#x043a; &#x0438;&#x043a;&#x043e;&#x043d;&#x043a;&#x0438;</h2>
+            <div class="image-search-header" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="image-search-input" class="material-input" placeholder="&#x0417;&#x0430;&#x043f;&#x0440;&#x043e;&#x0441; (&#x043d;&#x0430;&#x043f;&#x0440;&#x0438;&#x043c;&#x0435;&#x0440;, YouTube icon)" style="flex: 1; border-bottom: 1px solid #ccc;">
+                <button type="button" id="image-search-submit-btn" class="modal-icon-btn" style="background: #2196f3; color: white;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+            <div id="image-search-loading" class="hidden" style="text-align: center; padding: 40px; color: #666;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-anim"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"></circle></svg>
+                <div style="margin-top: 10px; font-size: 0.9rem;">&#x0417;&#x0430;&#x0433;&#x0440;&#x0443;&#x0437;&#x043a;&#x0430;...</div>
+            </div>
+            <div id="image-search-error" class="hidden" style="text-align: center; padding: 20px; color: #d32f2f; font-size: 0.9rem;"></div>
+            <div id="image-search-grid" class="image-search-grid"></div>
+            <div style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #888;">
+                &#x041a;&#x043b;&#x0438;&#x043a;&#x043d;&#x0438;&#x0442;&#x0435; &#x0434;&#x0432;&#x0430;&#x0436;&#x0434;&#x044b; &#x0434;&#x043b;&#x044f; &#x0432;&#x044b;&#x0431;&#x043e;&#x0440;&#x0430;
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal app-settings-content">
+            <header class="app-settings-header">
+                <h2>Настройки</h2>
+                <button type="button" class="close-modal-btn light-close" id="close-settings-btn" aria-label="Закрыть настройки">&times;</button>
+            </header>
+            <form id="settings-form">
+                <div class="app-settings-layout">
+                    <nav class="app-settings-nav" aria-label="Разделы настроек">
+                        <button type="button" class="app-settings-nav__item active" data-settings-target="general"><span>▣</span>Основные</button>
+                        <button type="button" class="app-settings-nav__item" data-settings-target="search"><span>⌕</span>Панель поиска</button>
+                        <button type="button" class="app-settings-nav__item" data-settings-target="bookmarks"><span>♧</span>Закладки</button>
+                        <button type="button" class="app-settings-nav__item" data-settings-target="widgets"><span>◫</span>Виджеты</button>
+                    </nav>
+                    <div class="app-settings-scroll">
+                    <section class="app-settings-section active" data-settings-panel="general">
+                        <label class="app-setting-row">
+                            <span>Формат времени</span>
+                            <select id="settings-time-format">
+                                <option value="24">24 часа</option>
+                                <option value="12">12 часов</option>
+                            </select>
+                        </label>
+                        <label class="app-setting-row">
+                            <span class="app-setting-copy"><strong>Панель виджетов</strong><small>На узком экране скрывается автоматически</small></span>
+                            <input type="checkbox" id="settings-show-sidebar" class="app-setting-checkbox">
+                        </label>
+                    </section>
+
+                    <section class="app-settings-section" data-settings-panel="search">
+                        <label class="app-setting-row">
+                            <span>Открывать результаты поиска в новой вкладке</span>
+                            <input type="checkbox" id="settings-search-new-tab" class="app-setting-checkbox">
+                        </label>
+                        <div class="app-settings-hint">Поисковую систему можно изменить непосредственно в панели поиска.</div>
+                    </section>
+
+                    <section class="app-settings-section" data-settings-panel="bookmarks">
+                        <label class="app-setting-row">
+                            <span>Открывать закладки в новой вкладке</span>
+                            <input type="checkbox" id="settings-bookmarks-new-tab" class="app-setting-checkbox">
+                        </label>
+                        <label class="app-setting-row">
+                            <span class="app-setting-copy"><strong>Цвет иконок сайтов</strong><small>Для сайтов без собственной иконки</small></span>
+                            <input type="color" id="settings-site-color" value="#64b5f6">
+                        </label>
+                        <label class="app-setting-row">
+                            <span class="app-setting-copy"><strong>Цвет папок</strong><small>Применяется к папкам в сетке и окнах</small></span>
+                            <input type="color" id="settings-folder-color" value="#5c6bc0">
+                        </label>
+                        <label class="app-setting-row">
+                            <span>Фон под названиями</span>
+                            <input type="checkbox" id="settings-label-background" class="app-setting-checkbox">
+                        </label>
+                        <label class="app-setting-row">
+                            <span>Цвет фона названий</span>
+                            <input type="color" id="settings-label-background-color" value="#000000">
+                        </label>
+                        <div class="app-settings-subheading">Управление данными</div>
+                        <div class="bookmark-transfer-actions">
+                            <label class="bookmark-import-button">
+                                <input type="file" id="bookmark-import-input" accept="text/html,.html,.htm" hidden>
+                                Импортировать HTML
+                            </label>
+                            <button type="button" id="bookmark-export-button" class="bookmark-import-button">Экспортировать HTML</button>
+                        </div>
+                        <div id="bookmark-import-status" class="bookmark-import-status"></div>
+                    </section>
+
+                    <section class="app-settings-section" data-settings-panel="widgets">
+                        <div class="app-settings-hint app-settings-hint--top">Здесь задаётся состав левой панели. Те же параметры доступны через кнопку управления виджетами в Dock.</div>
+                        <label class="app-setting-row"><span>Погода</span><input type="checkbox" id="settings-widget-weather" class="app-setting-checkbox"></label>
+                        <label class="app-setting-row"><span>Pomodoro</span><input type="checkbox" id="settings-widget-pomodoro" class="app-setting-checkbox"></label>
+                        <label class="app-setting-row"><span>Звуковое пространство</span><input type="checkbox" id="settings-widget-soundscape" class="app-setting-checkbox"></label>
+                        <label class="app-setting-row"><span>Заметки</span><input type="checkbox" id="settings-widget-notes" class="app-setting-checkbox"></label>
+                        <label class="app-setting-row"><span>Цитаты</span><input type="checkbox" id="settings-widget-quotes" class="app-setting-checkbox"></label>
+                    </section>
+                    </div>
+                </div>
+                <div class="modal-actions app-settings-actions">
+                    <button type="button" class="btn-cancel" id="close-settings-cancel">&#x041e;&#x0442;&#x043c;&#x0435;&#x043d;&#x0430;</button>
+                    <button type="submit" class="btn-primary">&#x0421;&#x043e;&#x0445;&#x0440;&#x0430;&#x043d;&#x0438;&#x0442;&#x044c;</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bookmark Import Preview -->
+    <div id="bookmark-import-preview-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal bookmark-import-preview-content">
+            <button type="button" class="close-modal-btn light-close" id="close-import-preview-btn">&times;</button>
+            <h2 class="light-title">Предварительный просмотр</h2>
+            <div id="bookmark-import-summary" class="bookmark-import-summary"></div>
+            <label class="bookmark-import-destination">
+                <span>Импортировать в</span>
+                <select id="bookmark-import-destination"></select>
+            </label>
+            <div id="bookmark-import-preview-tree" class="bookmark-import-preview-tree"></div>
+            <p id="bookmark-import-preview-status" class="bookmark-import-preview-status" aria-live="polite"></p>
+            <div class="modal-actions">
+                <button type="button" id="cancel-import-preview-btn" class="btn-cancel">Отмена</button>
+                <button type="button" id="confirm-import-preview-btn" class="btn-primary">Импортировать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widgets Manager -->
+    <div id="widgets-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal widgets-manager-content">
+            <button type="button" class="close-modal-btn light-close" id="close-widgets-btn">&times;</button>
+            <h2 class="light-title">Управление виджетами</h2>
+            <p class="widgets-manager-hint">Изменения сразу видны на стартовой странице. Перетаскивайте карточки, чтобы изменить их порядок.</p>
+            <div class="widgets-manager-list">
+                <label class="widgets-manager-item widgets-manager-item--master">
+                    <span class="widgets-manager-icon">◫</span>
+                    <span class="widgets-manager-copy"><strong>Панель виджетов</strong><small>Автоматически скрывается на узком экране</small></span>
+                    <input type="checkbox" id="widgets-manager-panel" class="app-setting-checkbox">
+                </label>
+                <label class="widgets-manager-item" data-widget-key="weather">
+                    <span class="widgets-manager-drag" aria-hidden="true">⠿</span>
+                    <span class="widgets-manager-icon">☀️</span>
+                    <span class="widgets-manager-copy"><strong>Погода</strong><small>Город, температура и влажность</small></span>
+                    <input type="checkbox" id="widgets-manager-weather" class="app-setting-checkbox">
+                </label>
+                <label class="widgets-manager-item" data-widget-key="pomodoro">
+                    <span class="widgets-manager-drag" aria-hidden="true">⠿</span>
+                    <span class="widgets-manager-icon">◴</span>
+                    <span class="widgets-manager-copy"><strong>Pomodoro</strong><small>Фокус-сессии и короткие перерывы</small></span>
+                    <input type="checkbox" id="widgets-manager-pomodoro" class="app-setting-checkbox">
+                </label>
+                <label class="widgets-manager-item" data-widget-key="soundscape">
+                    <span class="widgets-manager-drag">⋮⋮</span><span class="widgets-manager-icon">◉</span>
+                    <span class="widgets-manager-copy"><strong>Звуковое пространство</strong><small>Шумы, природа и медитация</small></span>
+                    <input type="checkbox" id="widgets-manager-soundscape" class="app-setting-checkbox">
+                </label>
+                <label class="widgets-manager-item" data-widget-key="notes">
+                    <span class="widgets-manager-drag" aria-hidden="true">⠿</span>
+                    <span class="widgets-manager-icon">📝</span>
+                    <span class="widgets-manager-copy"><strong>Заметки</strong><small>Быстрые записи на новой вкладке</small></span>
+                    <input type="checkbox" id="widgets-manager-notes" class="app-setting-checkbox">
+                </label>
+                <label class="widgets-manager-item" data-widget-key="quotes">
+                    <span class="widgets-manager-drag" aria-hidden="true">⠿</span>
+                    <span class="widgets-manager-icon">💬</span>
+                    <span class="widgets-manager-copy"><strong>Цитаты</strong><small>Категории и случайные высказывания</small></span>
+                    <input type="checkbox" id="widgets-manager-quotes" class="app-setting-checkbox">
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="cancel-widgets-btn" class="btn-cancel">Отмена</button>
+                <button type="button" id="save-widgets-btn" class="btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product information -->
+    <div id="about-modal" class="modal-overlay hidden">
+        <div class="modal-content light-modal about-content">
+            <button type="button" class="close-modal-btn light-close" id="close-about-btn">&times;</button>
+            <div class="about-hero">
+                <img src="brand-mark.svg" alt="" class="about-hero__mark">
+                <div><p class="about-kicker">ВАШЕ ЦИФРОВОЕ ПРОСТРАНСТВО</p><h2 class="light-title">Midvea Shelter</h2></div>
+            </div>
+            <p class="about-lead">Независимая стартовая страница с локальными настройками, закладками Chrome и инструментами для спокойной работы.</p>
+            <div class="about-principles">
+                <div><strong>Local-first</strong><span>Настройки и пользовательские данные остаются в браузере.</span></div>
+                <div><strong>Без скрытой аналитики</strong><span>Расширение не продаёт данные и не создаёт рекламный профиль.</span></div>
+                <div><strong>Самостоятельный продукт</strong><span>Собственная визуальная система и независимая реализация.</span></div>
+            </div>
+            <div class="about-links">
+                <a href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>
+            <a href="asset-sources.html" target="_blank" rel="noopener">Источники материалов</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="about.js" charset="utf-8"></script>
+    <script src="weather.js" charset="utf-8"></script>
+    <script src="notes.js" charset="utf-8"></script>
+    <script src="pomodoro.js" charset="utf-8"></script>
+    <script src="soundscape.js" charset="utf-8"></script>
+    <script src="app.js" charset="utf-8"></script>
+</body>
+</html>
