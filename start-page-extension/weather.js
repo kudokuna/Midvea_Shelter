@@ -1,5 +1,11 @@
 // Weather powered by Open-Meteo. The public endpoints do not require an API key.
 const WEATHER_CACHE_TTL = 30 * 60 * 1000;
+const WEATHER_LOCALE = window.MidveaI18n?.locale || 'en';
+const WEATHER_TEXT = {
+    en: { locating: 'Locating...', saved: 'saved', searching: 'Searching...', myLocation: 'My location', clear: 'clear', mainlyClear: 'mainly clear', partlyCloudy: 'partly cloudy', overcast: 'overcast', fog: 'fog', drizzle: 'drizzle', freezingDrizzle: 'freezing drizzle', rain: 'rain', freezingRain: 'freezing rain', snow: 'snow', showers: 'showers', snowfall: 'snowfall', thunderstorm: 'thunderstorm', unavailable: 'not available', pressure: 'Pressure', humidity: 'Humidity', cityNotFound: 'City not found', checkName: 'Check the name', noLocation: 'Location unavailable', enterCity: 'Enter a city manually', weatherUnavailable: 'Weather unavailable', checkConnection: 'Check your connection' },
+    ru: { locating: 'Определение...', saved: 'сохранено', searching: 'Поиск...', myLocation: 'Моё местоположение', clear: 'ясно', mainlyClear: 'преимущественно ясно', partlyCloudy: 'переменная облачность', overcast: 'пасмурно', fog: 'туман', drizzle: 'морось', freezingDrizzle: 'ледяная морось', rain: 'дождь', freezingRain: 'ледяной дождь', snow: 'снег', showers: 'ливень', snowfall: 'снегопад', thunderstorm: 'гроза', unavailable: 'нет данных', pressure: 'Давление', humidity: 'Влажность', cityNotFound: 'Город не найден', checkName: 'Проверьте название', noLocation: 'Геолокация недоступна', enterCity: 'Укажите город вручную', weatherUnavailable: 'Погода недоступна', checkConnection: 'Проверьте соединение' },
+    uk: { locating: 'Визначення...', saved: 'збережено', searching: 'Пошук...', myLocation: 'Моє місцезнаходження', clear: 'ясно', mainlyClear: 'переважно ясно', partlyCloudy: 'мінлива хмарність', overcast: 'хмарно', fog: 'туман', drizzle: 'мряка', freezingDrizzle: 'крижана мряка', rain: 'дощ', freezingRain: 'крижаний дощ', snow: 'сніг', showers: 'злива', snowfall: 'снігопад', thunderstorm: 'гроза', unavailable: 'немає даних', pressure: 'Тиск', humidity: 'Вологість', cityNotFound: 'Місто не знайдено', checkName: 'Перевірте назву', noLocation: 'Геолокація недоступна', enterCity: 'Вкажіть місто вручну', weatherUnavailable: 'Погода недоступна', checkConnection: 'Перевірте з’єднання' }
+}[WEATHER_LOCALE];
 const WEATHER_CURRENT_FIELDS = [
     'temperature_2m',
     'relative_humidity_2m',
@@ -46,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     location = await findCity(preferences.weatherCityPref);
                 }
             } else {
-                setWeatherStatus('Определение...', '--');
+                setWeatherStatus(WEATHER_TEXT.locating, '--');
                 location = await getBrowserLocation();
             }
 
@@ -61,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (preferences.cachedWeather && preferences.cachedWeather.unit === unit) {
                 updateWeatherUI(preferences.cachedWeather, unit);
                 const description = document.getElementById('weather-desc');
-                if (description) description.textContent = `${preferences.cachedWeather.desc} · сохранено`;
+                if (description) description.textContent = `${preferences.cachedWeather.desc} · ${WEATHER_TEXT.saved}`;
                 return;
             }
             handleWeatherError(error);
@@ -179,7 +185,7 @@ async function searchCities(query, count = 5) {
     url.search = new URLSearchParams({
         name: query,
         count: String(count),
-        language: 'ru',
+        language: WEATHER_LOCALE,
         format: 'json'
     });
     const response = await fetch(url);
@@ -196,7 +202,7 @@ async function searchCities(query, count = 5) {
 }
 
 async function findCity(query) {
-    setWeatherStatus('Поиск...', '--');
+    setWeatherStatus(WEATHER_TEXT.searching, '--');
     const [location] = await searchCities(query, 1);
     if (!location) throw new Error('CITY_NOT_FOUND');
     location.query = query;
@@ -214,7 +220,7 @@ function getBrowserLocation() {
             ({ coords }) => resolve({
                 latitude: coords.latitude,
                 longitude: coords.longitude,
-                name: 'Моё местоположение',
+                name: WEATHER_TEXT.myLocation,
                 country: '',
                 admin1: '',
                 query: ''
@@ -260,20 +266,20 @@ function formatLocation(location) {
 }
 
 function describeWeather(code) {
-    if (code === 0) return 'ясно';
-    if (code === 1) return 'преимущественно ясно';
-    if (code === 2) return 'переменная облачность';
-    if (code === 3) return 'пасмурно';
-    if ([45, 48].includes(code)) return 'туман';
-    if ([51, 53, 55].includes(code)) return 'морось';
-    if ([56, 57].includes(code)) return 'ледяная морось';
-    if ([61, 63, 65].includes(code)) return 'дождь';
-    if ([66, 67].includes(code)) return 'ледяной дождь';
-    if ([71, 73, 75, 77].includes(code)) return 'снег';
-    if ([80, 81, 82].includes(code)) return 'ливень';
-    if ([85, 86].includes(code)) return 'снегопад';
-    if ([95, 96, 99].includes(code)) return 'гроза';
-    return 'нет данных';
+    if (code === 0) return WEATHER_TEXT.clear;
+    if (code === 1) return WEATHER_TEXT.mainlyClear;
+    if (code === 2) return WEATHER_TEXT.partlyCloudy;
+    if (code === 3) return WEATHER_TEXT.overcast;
+    if ([45, 48].includes(code)) return WEATHER_TEXT.fog;
+    if ([51, 53, 55].includes(code)) return WEATHER_TEXT.drizzle;
+    if ([56, 57].includes(code)) return WEATHER_TEXT.freezingDrizzle;
+    if ([61, 63, 65].includes(code)) return WEATHER_TEXT.rain;
+    if ([66, 67].includes(code)) return WEATHER_TEXT.freezingRain;
+    if ([71, 73, 75, 77].includes(code)) return WEATHER_TEXT.snow;
+    if ([80, 81, 82].includes(code)) return WEATHER_TEXT.showers;
+    if ([85, 86].includes(code)) return WEATHER_TEXT.snowfall;
+    if ([95, 96, 99].includes(code)) return WEATHER_TEXT.thunderstorm;
+    return WEATHER_TEXT.unavailable;
 }
 
 function updateWeatherUI(data, unit) {
@@ -281,8 +287,8 @@ function updateWeatherUI(data, unit) {
     document.getElementById('weather-desc').textContent = data.desc;
     document.getElementById('weather-temp-val').textContent = data.temp;
     setTemperatureUnit(unit);
-    document.getElementById('weather-pressure').textContent = `Давление: ${Math.round(data.pressure * 0.750062)} мм.рт.ст.`;
-    document.getElementById('weather-humidity').textContent = `Влажность: ${data.humidity}%`;
+    document.getElementById('weather-pressure').textContent = `${WEATHER_TEXT.pressure}: ${Math.round(data.pressure * 0.750062)} ${WEATHER_LOCALE === 'en' ? 'mmHg' : WEATHER_LOCALE === 'uk' ? 'мм рт. ст.' : 'мм.рт.ст.'}`;
+    document.getElementById('weather-humidity').textContent = `${WEATHER_TEXT.humidity}: ${data.humidity}%`;
 
     const icon = document.getElementById('weather-icon');
     icon.src = createWeatherIcon(data.code, data.isDay);
@@ -303,11 +309,11 @@ function setWeatherStatus(city, description) {
 function handleWeatherError(error) {
     console.error('Ошибка погоды:', error);
     const knownMessage = {
-        CITY_NOT_FOUND: ['Город не найден', 'Проверьте название'],
-        GEO_DENIED: ['Нет геолокации', 'Укажите город вручную'],
-        GEO_UNAVAILABLE: ['Геолокация недоступна', 'Укажите город вручную']
+        CITY_NOT_FOUND: [WEATHER_TEXT.cityNotFound, WEATHER_TEXT.checkName],
+        GEO_DENIED: [WEATHER_TEXT.noLocation, WEATHER_TEXT.enterCity],
+        GEO_UNAVAILABLE: [WEATHER_TEXT.noLocation, WEATHER_TEXT.enterCity]
     }[error.message];
-    setWeatherStatus(...(knownMessage || ['Погода недоступна', 'Проверьте соединение']));
+    setWeatherStatus(...(knownMessage || [WEATHER_TEXT.weatherUnavailable, WEATHER_TEXT.checkConnection]));
     document.getElementById('weather-temp-val').textContent = '--';
     document.getElementById('weather-pressure').textContent = 'Давление: -- мм.рт.ст.';
     document.getElementById('weather-humidity').textContent = 'Влажность: --%';

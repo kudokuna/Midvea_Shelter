@@ -216,17 +216,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const duration = durationFor(state.mode);
         const progress = duration ? (duration - state.remaining) / duration : 0;
         progressElement.style.setProperty('--pomodoro-progress', `${Math.min(1, Math.max(0, progress)) * 360}deg`);
-        toggleButton.textContent = state.running ? 'Пауза' : 'Старт';
+        const translate = window.MidveaI18n?.t || (value => value);
+        toggleButton.textContent = translate(state.running ? 'Пауза' : 'Старт');
         roundsElement.textContent = `${state.completed} ${pluralizeSessions(state.completed)}`;
         modeButtons.forEach(button => {
             const isBreakButton = button.dataset.pomodoroMode === 'break';
             button.classList.toggle('active', isBreakButton ? state.mode !== 'focus' : state.mode === 'focus');
-            if (isBreakButton) button.textContent = state.mode === 'longBreak' ? 'Длинный перерыв' : 'Перерыв';
+            if (isBreakButton) button.textContent = translate(state.mode === 'longBreak' ? 'Длинный перерыв' : 'Перерыв');
         });
         document.title = state.running ? `${timeElement.textContent} · Midvea Shelter` : 'Midvea Shelter';
     }
 
     function pluralizeSessions(value) {
+        const locale = window.MidveaI18n?.locale || 'en';
+        if (locale === 'en') return value === 1 ? 'session' : 'sessions';
+        if (locale === 'uk') {
+            const mod10 = value % 10, mod100 = value % 100;
+            if (mod10 === 1 && mod100 !== 11) return 'сесія';
+            if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'сесії';
+            return 'сесій';
+        }
         const mod10 = value % 10, mod100 = value % 100;
         if (mod10 === 1 && mod100 !== 11) return 'сессия';
         if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'сессии';

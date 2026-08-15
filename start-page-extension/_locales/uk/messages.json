@@ -1,0 +1,8 @@
+{
+  "extensionName": { "message": "Midvea Shelter" },
+  "extensionDescription": { "message": "Спокійна локальна нова вкладка із закладками, погодою, нотатками, фокус-інструментами та фонами." },
+  "pomodoroFocusTitle": { "message": "Фокус-сесію завершено" },
+  "pomodoroFocusMessage": { "message": "Час зробити перерву." },
+  "pomodoroBreakTitle": { "message": "Перерву завершено" },
+  "pomodoroBreakMessage": { "message": "Можна повертатися до роботи." }
+}

@@ -1,5 +1,6 @@
 // notes.js — Notes Widget
 document.addEventListener('DOMContentLoaded', () => {
+    const t = window.MidveaI18n?.t || (value => value);
     let notes = [];
 
     function loadNotes() {
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             content.className = 'notes-widget__content';
             content.contentEditable = 'true';
             content.setAttribute('role', 'textbox');
-            content.setAttribute('aria-label', 'Текст заметки');
+            content.setAttribute('aria-label', t('Текст заметки'));
             content.textContent = note.text;
             content.spellcheck = false;
 
@@ -57,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
             removeBtn.className = 'notes-widget__remove';
             removeBtn.type = 'button';
             removeBtn.innerHTML = '✕';
-            removeBtn.title = 'Удалить';
-            removeBtn.setAttribute('aria-label', 'Удалить заметку');
+            removeBtn.title = t('Удалить');
+            removeBtn.setAttribute('aria-label', t('Удалить заметку'));
             removeBtn.addEventListener('click', () => {
                 notes.splice(idx, 1);
                 saveNotes();
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const addBtn = document.createElement('button');
         addBtn.className = 'notes-widget__add-note';
         addBtn.type = 'button';
-        addBtn.innerHTML = '<span style="font-size:15px;line-height:1">+</span> Новая заметка';
+        addBtn.innerHTML = `<span style="font-size:15px;line-height:1">+</span> ${t('Новая заметка')}`;
         addBtn.addEventListener('click', () => addNote());
         list.appendChild(addBtn);
     }

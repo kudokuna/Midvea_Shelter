@@ -208,7 +208,8 @@ function initClock() {
             clockEl.textContent = `${h}:${m}`;
         }
         const opts = { weekday: 'long', month: 'long', day: 'numeric' };
-        let d = now.toLocaleDateString('ru-RU', opts);
+        const locale = window.MidveaI18n?.locale || 'en';
+        let d = now.toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'ru' ? 'ru-RU' : 'en-US', opts);
         d = d.charAt(0).toUpperCase() + d.slice(1);
         dateEl.textContent = d;
     }
@@ -552,7 +553,7 @@ function initBackground() {
 // ================================================================
 // QUOTES WITH CATEGORIES
 // ================================================================
-const QUOTES = {
+const QUOTES_EN = {
     motivation: [
         { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
         { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
@@ -570,7 +571,7 @@ const QUOTES = {
     humor: [
         { text: "A day without laughter is a day wasted.", author: "Charlie Chaplin" },
         { text: "The brain is a wonderful organ. It starts working the moment you get up in the morning.", author: "Robert Frost" },
-        { text: "I'm not lazy, I'm just on my energy saving mode.", author: "Неизвестно" },
+        { text: "I'm not lazy, I'm just on my energy saving mode.", author: "Unknown" },
         { text: "Age is of no importance unless you're a cheese.", author: "Billie Burke" },
         { text: "Behind every great man is a woman rolling her eyes.", author: "Jim Carrey" },
     ],
@@ -582,6 +583,67 @@ const QUOTES = {
         { text: "Research is what I'm doing when I don't know what I'm doing.", author: "Wernher von Braun" },
     ]
 };
+const QUOTES_RU = {
+    motivation: [
+        { text: 'Успех не окончателен, неудача не фатальна: важна смелость продолжать.', author: 'Уинстон Черчилль' },
+        { text: 'Единственный способ делать великую работу — любить то, что вы делаете.', author: 'Стив Джобс' },
+        { text: 'Поверьте, что можете, — и вы уже на полпути.', author: 'Теодор Рузвельт' },
+        { text: 'Трудности часто готовят обычных людей к необыкновенной судьбе.', author: 'К. С. Льюис' },
+        { text: 'Неважно, как медленно вы идёте, пока вы не останавливаетесь.', author: 'Конфуций' }
+    ],
+    wisdom: [
+        { text: 'Всё, что вы можете вообразить, реально.', author: 'Пабло Пикассо' },
+        { text: 'В центре каждой трудности скрывается возможность.', author: 'Альберт Эйнштейн' },
+        { text: 'Единственная истинная мудрость — знать, что ты ничего не знаешь.', author: 'Сократ' },
+        { text: 'Жизнь — это то, что происходит, пока вы строите другие планы.', author: 'Джон Леннон' },
+        { text: 'Неисследованная жизнь не стоит того, чтобы её проживать.', author: 'Сократ' }
+    ],
+    humor: [
+        { text: 'День без смеха — потерянный день.', author: 'Чарли Чаплин' },
+        { text: 'Мозг — удивительный орган: он начинает работать, как только вы просыпаетесь.', author: 'Роберт Фрост' },
+        { text: 'Я не ленивый, я просто в режиме энергосбережения.', author: 'Неизвестно' },
+        { text: 'Возраст не имеет значения, если только вы не сыр.', author: 'Билли Бёрк' },
+        { text: 'За каждым великим мужчиной стоит женщина, закатывающая глаза.', author: 'Джим Керри' }
+    ],
+    science: [
+        { text: 'Наука не только совместима с духовностью — она является её глубоким источником.', author: 'Карл Саган' },
+        { text: 'Наука хороша тем, что она истинна независимо от того, верите вы в неё или нет.', author: 'Нил Деграсс Тайсон' },
+        { text: 'Если вы не можете объяснить это просто, вы сами понимаете недостаточно хорошо.', author: 'Альберт Эйнштейн' },
+        { text: 'Бесконечны две вещи: Вселенная и человеческая глупость; насчёт Вселенной я не уверен.', author: 'Альберт Эйнштейн' },
+        { text: 'Исследование — это то, чем я занимаюсь, когда не знаю, что делаю.', author: 'Вернер фон Браун' }
+    ]
+};
+const QUOTES_UK = {
+    motivation: [
+        { text: 'Успіх не остаточний, невдача не фатальна: важлива сміливість продовжувати.', author: 'Вінстон Черчилль' },
+        { text: 'Єдиний спосіб робити велику справу — любити те, що ви робите.', author: 'Стів Джобс' },
+        { text: 'Повірте, що можете, — і ви вже на півдорозі.', author: 'Теодор Рузвельт' },
+        { text: 'Труднощі часто готують звичайних людей до надзвичайної долі.', author: 'К. С. Льюїс' },
+        { text: 'Неважливо, як повільно ви йдете, доки не зупиняєтеся.', author: 'Конфуцій' }
+    ],
+    wisdom: [
+        { text: 'Усе, що ви можете уявити, реальне.', author: 'Пабло Пікассо' },
+        { text: 'У центрі кожної складності прихована можливість.', author: 'Альберт Ейнштейн' },
+        { text: 'Єдина справжня мудрість — знати, що ти нічого не знаєш.', author: 'Сократ' },
+        { text: 'Життя — це те, що відбувається, поки ви будуєте інші плани.', author: 'Джон Леннон' },
+        { text: 'Недосліджене життя не варте того, щоб його проживати.', author: 'Сократ' }
+    ],
+    humor: [
+        { text: 'День без сміху — втрачений день.', author: 'Чарлі Чаплін' },
+        { text: 'Мозок — дивовижний орган: він починає працювати, щойно ви прокидаєтеся.', author: 'Роберт Фрост' },
+        { text: 'Я не ледачий, я просто в режимі енергозбереження.', author: 'Невідомий автор' },
+        { text: 'Вік не має значення, якщо тільки ви не сир.', author: 'Біллі Берк' },
+        { text: 'За кожним великим чоловіком стоїть жінка, яка закочує очі.', author: 'Джим Керрі' }
+    ],
+    science: [
+        { text: 'Наука не лише сумісна з духовністю — вона є її глибоким джерелом.', author: 'Карл Саган' },
+        { text: 'Наука добра тим, що вона істинна незалежно від того, вірите ви в неї чи ні.', author: 'Ніл Деграсс Тайсон' },
+        { text: 'Якщо ви не можете пояснити це просто, ви самі розумієте недостатньо добре.', author: 'Альберт Ейнштейн' },
+        { text: 'Нескінченні дві речі: Всесвіт і людська дурість; щодо Всесвіту я не впевнений.', author: 'Альберт Ейнштейн' },
+        { text: 'Дослідження — це те, чим я займаюся, коли не знаю, що роблю.', author: 'Вернер фон Браун' }
+    ]
+};
+const QUOTES = window.MidveaI18n?.locale === 'uk' ? QUOTES_UK : window.MidveaI18n?.locale === 'ru' ? QUOTES_RU : QUOTES_EN;
 
 let currentCategory = 'motivation';
 let currentQuoteIdx = 0;

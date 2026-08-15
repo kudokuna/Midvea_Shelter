@@ -184,7 +184,13 @@
     }
     function updateUI() {
         widget.querySelectorAll('[data-sound-key]').forEach(button => button.classList.toggle('active', active.has(button.dataset.soundKey)));
-        status.textContent = active.size ? `${active.size} ${active.size === 1 ? 'звук' : active.size < 5 ? 'звука' : 'звуков'}` : 'Тишина';
+        const locale = window.MidveaI18n?.locale || 'en';
+        const countLabel = locale === 'en'
+            ? (active.size === 1 ? 'sound' : 'sounds')
+            : locale === 'uk'
+                ? (active.size % 10 === 1 && active.size % 100 !== 11 ? 'звук' : active.size % 10 >= 2 && active.size % 10 <= 4 && (active.size % 100 < 12 || active.size % 100 > 14) ? 'звуки' : 'звуків')
+                : (active.size === 1 ? 'звук' : active.size < 5 ? 'звука' : 'звуков');
+        status.textContent = active.size ? `${active.size} ${countLabel}` : (window.MidveaI18n?.t('Тишина') || 'Тишина');
     }
     function clearTimer() { clearTimeout(timerId); timerId = null; timerEndsAt = 0; }
     function startTimerIfNeeded() {

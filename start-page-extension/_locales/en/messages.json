@@ -1,0 +1,8 @@
+{
+  "extensionName": { "message": "Midvea Shelter" },
+  "extensionDescription": { "message": "A calm, local-first new tab with bookmarks, weather, notes, focus tools, and backgrounds." },
+  "pomodoroFocusTitle": { "message": "Focus session complete" },
+  "pomodoroFocusMessage": { "message": "Time for a break." },
+  "pomodoroBreakTitle": { "message": "Break complete" },
+  "pomodoroBreakMessage": { "message": "You can return to work." }
+}

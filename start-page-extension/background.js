@@ -40,8 +40,8 @@ chrome.alarms.onAlarm.addListener(alarm => {
             chrome.notifications.create('midvea-pomodoro-complete', {
                 type: 'basic',
                 iconUrl: 'icons/icon-128.png',
-                title: focusFinished ? 'Фокус-сессия завершена' : 'Перерыв завершён',
-                message: focusFinished ? 'Пора сделать перерыв.' : 'Можно возвращаться к работе.',
+                title: chrome.i18n.getMessage(focusFinished ? 'pomodoroFocusTitle' : 'pomodoroBreakTitle'),
+                message: chrome.i18n.getMessage(focusFinished ? 'pomodoroFocusMessage' : 'pomodoroBreakMessage'),
                 priority: 1
             });
         }
@@ -84,7 +84,7 @@ async function searchImages(rawQuery) {
 
 async function fetchDuckDuckGoImages(query) {
     const searchPage = await fetch(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`, {
-        headers: { 'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8' }
+        headers: { 'Accept-Language': chrome.i18n.getUILanguage() }
     });
     if (!searchPage.ok) throw new Error(`DuckDuckGo: HTTP ${searchPage.status}`);
 
@@ -93,7 +93,7 @@ async function fetchDuckDuckGoImages(query) {
     if (!tokenMatch) throw new Error('DuckDuckGo не вернул токен поиска');
 
     const params = new URLSearchParams({
-        l: 'ru-ru',
+        l: chrome.i18n.getUILanguage().toLowerCase(),
         o: 'json',
         q: query,
         vqd: tokenMatch[1],
@@ -115,7 +115,7 @@ async function fetchDuckDuckGoImages(query) {
 
 async function fetchBingImages(query) {
     const response = await fetch(`https://www.bing.com/images/search?q=${encodeURIComponent(query)}&form=HDRSC2`, {
-        headers: { 'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8' }
+        headers: { 'Accept-Language': chrome.i18n.getUILanguage() }
     });
     if (!response.ok) throw new Error(`Bing Images: HTTP ${response.status}`);
 
