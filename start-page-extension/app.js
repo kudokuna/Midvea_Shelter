@@ -11,6 +11,7 @@ const DEFAULT_APP_SETTINGS = {
     bookmarksLabelBackground: false,
     bookmarksLabelBackgroundColor: '#000000',
     siteIconSize: 'standard',
+    defaultBookmarkCategoryId: 'last',
     showWeatherWidget: true,
     showNotesWidget: true,
     showQuotesWidget: true,
@@ -338,6 +339,7 @@ function populateSettingsForm() {
     document.getElementById('settings-label-background-color').value = appSettings.bookmarksLabelBackgroundColor;
     const siteSizeField = document.querySelector(`input[name="site-icon-size"][value="${normalizeSiteIconSize(appSettings.siteIconSize)}"]`);
     if (siteSizeField) siteSizeField.checked = true;
+    populateDefaultBookmarkCategorySelect();
     document.getElementById('settings-widget-weather').checked = appSettings.showWeatherWidget;
     document.getElementById('settings-widget-notes').checked = appSettings.showNotesWidget;
     document.getElementById('settings-widget-quotes').checked = appSettings.showQuotesWidget;
@@ -364,6 +366,17 @@ function normalizeSiteIconSize(value) {
     return ['standard', 'medium', 'large'].includes(value) ? value : 'standard';
 }
 
+function populateDefaultBookmarkCategorySelect() {
+    const select = document.getElementById('settings-default-bookmark-category');
+    if (!select || !bookmarksFolderId) return;
+    const preferred = appSettings.defaultBookmarkCategoryId || 'last';
+    select.innerHTML = '<option value="last">Последняя открытая</option><option value="main">Главная</option>';
+    chrome.bookmarks.getChildren(bookmarksFolderId, children => {
+        (children || []).filter(item => !item.url).forEach(folder => select.add(new Option(folder.title, folder.id)));
+        select.value = [...select.options].some(option => option.value === preferred) ? preferred : 'last';
+    });
+}
+
 function readSettingsForm() {
     return {
         timeFormat: document.getElementById('settings-time-format').value === '12' ? '12' : '24',
@@ -375,6 +388,7 @@ function readSettingsForm() {
         bookmarksLabelBackground: document.getElementById('settings-label-background').checked,
         bookmarksLabelBackgroundColor: normalizeColor(document.getElementById('settings-label-background-color').value, DEFAULT_APP_SETTINGS.bookmarksLabelBackgroundColor),
         siteIconSize: normalizeSiteIconSize(document.querySelector('input[name="site-icon-size"]:checked')?.value),
+        defaultBookmarkCategoryId: document.getElementById('settings-default-bookmark-category')?.value || 'last',
         showWeatherWidget: document.getElementById('settings-widget-weather').checked,
         showNotesWidget: document.getElementById('settings-widget-notes').checked,
         showQuotesWidget: document.getElementById('settings-widget-quotes').checked,
@@ -1083,9 +1097,14 @@ function initializeBookmarkTabs() {
             return;
         }
         const categoryIds = new Set(children.filter(item => !item.url).map(item => item.id));
-        chrome.storage.local.get(['activeBookmarkTabId'], result => {
-            const savedId = result.activeBookmarkTabId;
-            activeBookmarkTabId = categoryIds.has(savedId) ? savedId : bookmarksFolderId;
+        chrome.storage.local.get(['activeBookmarkTabId', 'defaultBookmarkCategoryId'], result => {
+            const preferred = result.defaultBookmarkCategoryId;
+            const targetId = preferred === 'main'
+                ? bookmarksFolderId
+                : preferred && preferred !== 'last' && categoryIds.has(preferred)
+                    ? preferred
+                    : result.activeBookmarkTabId;
+            activeBookmarkTabId = categoryIds.has(targetId) ? targetId : bookmarksFolderId;
             currentFolderId = activeBookmarkTabId;
             folderStack = [];
             renderBookmarkTabs(children);

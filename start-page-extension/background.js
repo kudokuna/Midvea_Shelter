@@ -1,3 +1,23 @@
+const MIDVEA_DATA_SCHEMA_VERSION = 1;
+
+chrome.runtime.onInstalled.addListener(details => {
+    chrome.storage.local.get(['midveaDataSchemaVersion'], stored => {
+        const previousSchema = Number(stored.midveaDataSchemaVersion) || 0;
+        // Migrations are additive. Never clear storage or replace user values
+        // during an extension update.
+        const migration = { midveaDataSchemaVersion: MIDVEA_DATA_SCHEMA_VERSION };
+        if (details.reason === 'update') {
+            migration.lastSuccessfulUpdate = {
+                from: details.previousVersion || '',
+                to: chrome.runtime.getManifest().version,
+                at: new Date().toISOString(),
+                previousSchema
+            };
+        }
+        chrome.storage.local.set(migration);
+    });
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'schedulePomodoroAlarm') {
         chrome.alarms.clear('midvea-pomodoro').then(() => {

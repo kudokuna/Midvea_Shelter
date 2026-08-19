@@ -679,6 +679,10 @@
                             </div>
                         </div>
                         <label class="app-setting-row">
+                            <span class="app-setting-copy"><strong>Стартовая категория</strong><small>Открывается в новой вкладке</small></span>
+                            <select id="settings-default-bookmark-category"><option value="last">Последняя открытая</option><option value="main">Главная</option></select>
+                        </label>
+                        <label class="app-setting-row">
                             <span class="app-setting-copy"><strong>Цвет иконок сайтов</strong><small>Для сайтов без собственной иконки</small></span>
                             <input type="color" id="settings-site-color" value="#64b5f6">
                         </label>
@@ -701,6 +705,11 @@
                                 Импортировать HTML
                             </label>
                             <button type="button" id="bookmark-export-button" class="bookmark-import-button">Экспортировать HTML</button>
+                            <button type="button" id="full-backup-export-button" class="bookmark-import-button">Полная резервная копия</button>
+                            <label class="bookmark-import-button">
+                                <input type="file" id="full-backup-import-input" accept="application/json,.json" hidden>
+                                Восстановить из копии
+                            </label>
                         </div>
                         <div id="bookmark-import-status" class="bookmark-import-status"></div>
                     </section>
@@ -820,5 +829,6 @@
     <script src="pomodoro.js" charset="utf-8"></script>
     <script src="soundscape.js" charset="utf-8"></script>
     <script src="app.js" charset="utf-8"></script>
+    <script src="backup.js" charset="utf-8"></script>
 </body>
 </html>
