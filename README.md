@@ -1,7 +1,7 @@
 # Midvea Shelter
 
 <p align="center">
-  <img src="brand-mark.svg" alt="Midvea Shelter logo" width="112">
+  <img width="112"" alt="Midvea Shelter logo" src="https://github.com/user-attachments/assets/ce1ac108-59b4-4182-b67c-38f80897967e" />
 </p>
 
 <p align="center">
