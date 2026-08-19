@@ -2191,7 +2191,6 @@ function initModals() {
 
     // Gallery open
     document.getElementById('gallery-btn')?.addEventListener('click', () => document.getElementById('gallery-modal')?.classList.remove('hidden'));
-    document.getElementById('dock-add-bookmark-btn')?.addEventListener('click', openAddBookmarkModal);
     document.getElementById('confirm-remove-bm-btn')?.addEventListener('click', () => {
         if (pendingDeleteItem) removeBookmark(pendingDeleteItem);
     });
