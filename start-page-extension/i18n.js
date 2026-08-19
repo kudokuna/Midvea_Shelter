@@ -10,7 +10,7 @@
         ['Давление: -- мм.рт.ст.','Pressure: -- mmHg','Тиск: -- мм рт. ст.'],['Влажность: --%','Humidity: --%','Вологість: --%'],
         ['Настройки Pomodoro','Pomodoro settings','Налаштування Pomodoro'],['Завершённые фокус-сессии','Completed focus sessions','Завершені фокус-сесії'],
         ['0 сессий','0 sessions','0 сесій'],['Режим таймера','Timer mode','Режим таймера'],['Фокус','Focus','Фокус'],['Перерыв','Break','Перерва'],
-        ['Старт','Start','Старт'],['Пауза','Pause','Пауза'],['Сбросить таймер','Reset timer','Скинути таймер'],
+        ['Старт','Start','Старт'],['Пауза','Pause','Пауза'],['Сбросить таймер','Reset timer','Скинути таймер'],['Сбросить сессии','Reset sessions','Скинути сесії'],
         ['Настроить звуковое пространство','Configure soundscape','Налаштувати звуковий простір'],['ЗВУКОВОЕ ПРОСТРАНСТВО','SOUNDSCAPE','ЗВУКОВИЙ ПРОСТІР'],
         ['Звуковое пространство','Soundscape','Звуковий простір'],['Тишина','Silence','Тиша'],['Шумы','Noises','Шуми'],['Атмосфера','Ambience','Атмосфера'],
         ['Общая громкость','Master volume','Загальна гучність'],['Стоп','Stop','Стоп'],['Заметки','Notes','Нотатки'],['Добавить заметку','Add note','Додати нотатку'],
@@ -30,6 +30,9 @@
         ['Громкость шумов','Noise volume','Гучність шумів'],['Громкость атмосферы','Ambience volume','Гучність атмосфери'],
         ['Название','Name','Назва'],['Загрузить свою иконку','Upload your icon','Завантажити власну іконку'],['Найти иконку в сети','Find an icon online','Знайти іконку в мережі'],
         ['Для сайтов без собственной иконки','For sites without their own icon','Для сайтів без власної іконки'],['Цвет иконок сайтов','Site icon color','Колір іконок сайтів'],
+        ['Размер иконок сайтов','Site icon size','Розмір іконок сайтів'],['Размер сетки закладок','Bookmark grid size','Розмір сітки закладок'],['Стандартный','Standard','Стандартний'],['Средний','Medium','Середній'],['Большой','Large','Великий'],
+        ['Стартовая категория','Default category','Стартова категорія'],['Открывается в новой вкладке','Opens on a new tab','Відкривається в новій вкладці'],['Последняя открытая','Last opened','Остання відкрита'],
+        ['Полная резервная копия','Full backup','Повна резервна копія'],['Восстановить из копии','Restore from backup','Відновити з копії'],
         ['Удалить закладку?','Delete bookmark?','Видалити закладку?'],['Переместить закладку','Move bookmark','Перемістити закладку'],['Папка назначения','Destination folder','Папка призначення'],
         ['Найти папку…','Find a folder…','Знайти папку…'],['Подходящих папок нет.','No matching folders.','Відповідних папок немає.'],
         ['Импортировать HTML','Import HTML','Імпортувати HTML'],['Импортировать в','Import into','Імпортувати до'],['Предварительный просмотр','Preview','Попередній перегляд'],
@@ -68,7 +71,43 @@
         ['+ Папка','+ Folder','+ Папка'],['+ Сайт','+ Site','+ Сайт'],['15 минут','15 minutes','15 хвилин'],['30 минут','30 minutes','30 хвилин'],['45 минут','45 minutes','45 хвилин'],['60 минут','60 minutes','60 хвилин'],
         ['В этой папке пока ничего нет.','This folder is empty.','У цій папці поки нічого немає.'],['Загрузка обоев...','Loading backgrounds...','Завантаження фонів...'],['Закрыть настройки','Close settings','Закрити налаштування'],['Категории обоев','Background categories','Категорії фонів'],['На узком экране скрывается автоматически','Hidden automatically on narrow screens','На вузькому екрані приховується автоматично'],['ОТМЕНА','CANCEL','СКАСУВАТИ'],['СОХРАНИТЬ','SAVE','ЗБЕРЕГТИ'],['Сбросить','Reset','Скинути'],['Управление данными','Data controls','Керування даними'],['— Автор','— Author','— Автор'],
         ['Белый','White','Білий'],['Розовый','Pink','Рожевий'],['Коричневый','Brown','Коричневий'],['Голубой','Blue','Блакитний'],['Фиолетовый','Violet','Фіолетовий'],['Серый','Gray','Сірий'],['Красный','Red','Червоний'],['Глубокий','Deep','Глибокий'],['Мягкий','Soft','М’який'],['Воздушный','Airy','Повітряний'],['Шипение','Hiss','Шипіння'],['Гул','Rumble','Гул'],['Порывы','Gusts','Пориви'],['Шум дождя','Rain noise','Шум дощу'],['Прибой','Surf','Прибій'],['Винил','Vinyl','Вініл'],['Радиопомехи','Static','Радіоперешкоди'],['Пульсация','Pulse','Пульсація'],['Космический','Cosmic','Космічний'],
+        ['Источники материалов — Midvea Shelter','Asset sources — Midvea Shelter','Джерела матеріалів — Midvea Shelter'],
+        ['Логотип Midvea Shelter','Midvea Shelter logo','Логотип Midvea Shelter'],
+        ['Midvea Shelter · обновлено 15 августа 2026 года','Midvea Shelter · updated August 15, 2026','Midvea Shelter · оновлено 15 серпня 2026 року'],
+        ['Собственные материалы','Original assets','Власні матеріали'],
+        ['— оригинальный знак Midvea Shelter, созданный для проекта.','— the original Midvea Shelter mark created for the project.','— оригінальний знак Midvea Shelter, створений для проєкту.'],
+        ['и','and','та'],
+        ['— системный набор, экспортированный из оригинального знака.','— the system icon set exported from the original mark.','— системний набір, експортований з оригінального знака.'],
+        ['brand-mark.svg — оригинальный знак Midvea Shelter, созданный для проекта.','brand-mark.svg — the original Midvea Shelter mark created for the project.','brand-mark.svg — оригінальний знак Midvea Shelter, створений для проєкту.'],
+        ['icons/icon-16.png, icon-32.png, icon-48.png и icon-128.png — системный набор, экспортированный из оригинального знака.','icons/icon-16.png, icon-32.png, icon-48.png, and icon-128.png — the system icon set exported from the original mark.','icons/icon-16.png, icon-32.png, icon-48.png та icon-128.png — системний набір, експортований з оригінального знака.'],
+        ['Разметка, стили и JavaScript расширения — самостоятельная реализация проекта.','The extension markup, styles, and JavaScript are an independent implementation of the project.','Розмітка, стилі та JavaScript розширення — самостійна реалізація проєкту.'],
+        ['Внешние сервисы и динамический контент','External services and dynamic content','Зовнішні сервіси та динамічний контент'],
+        ['Open-Meteo — текущая погода и поиск населённых пунктов. Данные загружаются по запросу и не включены в дистрибутив.','Open-Meteo — current weather and location search. Data is loaded on demand and is not included in the distribution.','Open-Meteo — поточна погода та пошук населених пунктів. Дані завантажуються на запит і не входять до дистрибутива.'],
+        ['Reddit — пользователь выбирает фон из внешней выдачи. Контент не является частью расширения; перед публикацией источники должны быть ограничены материалами с подтверждённой лицензией.','Reddit — the user selects a background from external results. The content is not part of the extension; before publication, sources must be limited to assets with a verified license.','Reddit — користувач обирає фон із зовнішньої видачі. Контент не є частиною розширення; перед публікацією джерела мають бути обмежені матеріалами з підтвердженою ліцензією.'],
+        ['Google, Bing, DuckDuckGo и другие поисковые сервисы используются только как выбранные пользователем адресаты поиска.','Google, Bing, DuckDuckGo, and other search services are used only as user-selected search destinations.','Google, Bing, DuckDuckGo та інші пошукові сервіси використовуються лише як обрані користувачем адресати пошуку.'],
+        ['Иконки сайтов загружаются для пользовательских закладок и принадлежат владельцам соответствующих товарных знаков.','Site icons are loaded for user bookmarks and belong to the owners of the respective trademarks.','Іконки сайтів завантажуються для закладок користувача та належать власникам відповідних товарних знаків.'],
+        ['Исключённые материалы','Excluded assets','Виключені матеріали'],
+        ['Медиа из референсного расширения не должны включаться в сборку Midvea Shelter.','Media from the reference extension must not be included in the Midvea Shelter build.','Медіа з референсного розширення не мають входити до збірки Midvea Shelter.'],
+        ['Звуки виджета «Звуковое пространство»','Soundscape widget sounds','Звуки віджета «Звуковий простір»'],
+        ['Проверено 20 августа 2026 года. Файлы хранятся локально, поэтому воспроизведение не требует сети. Лицензия и автор указаны для каждой записи.','Verified August 20, 2026. Files are stored locally, so playback does not require a network connection. The license and author are listed for each recording.','Перевірено 20 серпня 2026 року. Файли зберігаються локально, тому відтворення не потребує мережі. Ліцензію та автора вказано для кожного запису.'],
+        ['Проверено 15 августа 2026 года. Файлы распространяются по','Verified August 15, 2026. The files are distributed under the','Перевірено 15 серпня 2026 року. Файли розповсюджуються за'],
+        ['и хранятся локально, поэтому воспроизведение не требует сети.','and are stored locally, so playback does not require a network connection.','і зберігаються локально, тому відтворення не потребує мережі.'],
+        ['Проверено 15 августа 2026 года. Файлы распространяются по Mixkit Free License и хранятся локально, поэтому воспроизведение не требует сети.','Verified August 15, 2026. The files are distributed under the Mixkit Free License and stored locally, so playback does not require a network connection.','Перевірено 15 серпня 2026 року. Файли розповсюджуються за Mixkit Free License і зберігаються локально, тому відтворення не потребує мережі.'],
+        ['20 вариантов цветного шума генерируются локально с помощью Web Audio API и не используют внешние аудиофайлы.','20 types of colored noise are generated locally using the Web Audio API and do not use external audio files.','20 варіантів кольорового шуму генеруються локально за допомогою Web Audio API і не використовують зовнішні аудіофайли.'],
+        ['источник','source','джерело'],['Вокзал','Train station','Вокзал'],['Ночной город','Night city','Нічне місто'],
         ['Дождь','Rain','Дощ'],['Океан','Ocean','Океан'],['Лес','Forest','Ліс'],['Огонь','Fire','Вогонь'],['Серверная','Server room','Серверна'],['Вентилятор','Fan','Вентилятор'],['Двигатель','Engine','Двигун'],['Фен','Hair dryer','Фен'],['Нагреватель','Heater','Обігрівач'],['Гроза','Thunder','Гроза'],['Река','River','Річка'],['Птицы','Birds','Птахи'],['Ночной лес','Night forest','Нічний ліс'],['Кафе','Café','Кафе'],['Поезд','Train','Потяг'],['Город','City','Місто'],['Офис','Office','Офіс'],['Часы','Clock','Годинник'],['Самолёт','Airplane','Літак'],['Ветер','Wind','Вітер'],['Слот','Slot','Слот']
+        ,['Геопозиция','Geolocation','Геопозиція'],['Запрос (например, YouTube icon)','Query (for example, YouTube icon)','Запит (наприклад, YouTube icon)']
+        ,['Главная','Main','Головна'],['Город:','City:','Місто:'],['Единицы:','Units:','Одиниці:'],['Кликните дважды для выбора','Double-click to select','Двічі клацніть, щоб вибрати']
+        ,['Поиск иконки','Icon search','Пошук іконки'],['Понедельник, 1 января','Monday, January 1','Понеділок, 1 січня'],['Редактировать закладку','Edit bookmark','Редагувати закладку']
+        ,['УДАЛИТЬ','DELETE','ВИДАЛИТИ'],['Выбрать цвет','Choose color','Вибрати колір'],['Загрузить иконку','Upload icon','Завантажити іконку']
+        ,['Подготовка полной резервной копии…','Preparing full backup…','Підготовка повної резервної копії…'],['Полная резервная копия сохранена.','Full backup saved.','Повну резервну копію збережено.']
+        ,['Восстановление данных…','Restoring data…','Відновлення даних…'],['Данные восстановлены. Страница перезагружается…','Data restored. Reloading the page…','Дані відновлено. Сторінка перезавантажується…']
+        ,['Папка Midvea Shelter ещё не создана.','The Midvea Shelter folder has not been created yet.','Папку Midvea Shelter ще не створено.']
+        ,['Текущая папка Midvea Shelter не найдена.','The current Midvea Shelter folder was not found.','Поточну папку Midvea Shelter не знайдено.']
+        ,['Файл не является совместимой резервной копией Midvea Shelter.','This file is not a compatible Midvea Shelter backup.','Цей файл не є сумісною резервною копією Midvea Shelter.']
+        ,['Резервная копия повреждена или неполна.','The backup is corrupted or incomplete.','Резервна копія пошкоджена або неповна.']
+        ,['Текущие закладки Midvea будут заменены данными из копии. Перед заменой будет скачана страховочная копия. Продолжить?','Current Midvea bookmarks will be replaced with backup data. A safety backup will be downloaded first. Continue?','Поточні закладки Midvea буде замінено даними з копії. Перед заміною буде завантажено страхову копію. Продовжити?']
+        ,['Ошибка резервного копирования:','Backup error:','Помилка резервного копіювання:'],['Ошибка восстановления:','Restore error:','Помилка відновлення:']
     ];
     const index = locale === 'ru' ? 0 : locale === 'uk' ? 2 : 1;
     const map = new Map(entries.map(row => [row[0], row[index]]));
@@ -83,7 +122,7 @@
     function localize(root = document) {
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const nodes = [];
         while (walker.nextNode()) nodes.push(walker.currentNode); nodes.forEach(translateTextNode);
-        (root.querySelectorAll ? root.querySelectorAll('*') : []).forEach(el => ['aria-label','title','placeholder','data-tooltip'].forEach(attr => {
+        (root.querySelectorAll ? root.querySelectorAll('*') : []).forEach(el => ['aria-label','title','placeholder','data-tooltip','alt'].forEach(attr => {
             if (el.hasAttribute(attr)) { const value = el.getAttribute(attr); el.setAttribute(attr, t(value)); }
         }));
     }
