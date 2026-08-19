@@ -33,9 +33,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 chrome.alarms.onAlarm.addListener(alarm => {
     if (alarm.name !== 'midvea-pomodoro') return;
-    chrome.storage.local.get(['pomodoroAlarmMeta'], result => {
+    chrome.storage.local.get(['pomodoroAlarmMeta', 'pomodoroNotifications'], result => {
         const meta = result.pomodoroAlarmMeta || {};
-        if (meta.notifications !== false) {
+        if (result.pomodoroNotifications !== false) {
             const focusFinished = meta.mode === 'focus';
             chrome.notifications.create('midvea-pomodoro-complete', {
                 type: 'basic',

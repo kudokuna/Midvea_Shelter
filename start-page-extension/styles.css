@@ -1307,6 +1307,28 @@ body {
     font-weight: 400;
     line-height: 1.35;
 }
+.site-size-control {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-width: 260px;
+    padding: 3px;
+    border: 1px solid var(--border-light-ui);
+    border-radius: 11px;
+    background: rgba(30,50,50,.055);
+}
+.site-size-control input { position: absolute; opacity: 0; pointer-events: none; }
+.site-size-control label {
+    padding: 7px 9px;
+    border-radius: 8px;
+    color: #697576;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 650;
+    text-align: center;
+    text-shadow: none;
+}
+.site-size-control input:checked + label { color: #07111c; background: var(--accent); box-shadow: 0 4px 12px rgba(var(--accent-rgb),.18); }
+.site-size-control input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
 .widgets-manager-item--master {
     margin-bottom: 6px;
     border-bottom: 1px solid var(--border-light-ui);
@@ -1360,6 +1382,44 @@ body {
     .app-settings-nav__item span { display: none; }
     .app-settings-scroll { padding: 8px 18px 20px; }
     .app-setting-row { min-height: 62px; }
+    .app-setting-row--site-size { align-items: stretch; flex-direction: column; gap: 10px; padding-block: 12px; }
+    .site-size-control { width: 100%; min-width: 0; }
+}
+
+/* Bookmark tile size presets. The standard preset preserves the existing UI. */
+.container.site-size-medium .draggable-grid { grid-template-columns: repeat(auto-fill, 100px); gap: 28px clamp(22px, 2vw, 44px); }
+.container.site-size-large .draggable-grid { grid-template-columns: repeat(auto-fill, 120px); gap: 34px clamp(26px, 2.4vw, 52px); }
+.container.site-size-medium .site-box__icon-image,
+.container.site-size-medium .site-box__icon-letter { width: 64px; height: 64px; }
+.container.site-size-large .site-box__icon-image,
+.container.site-size-large .site-box__icon-letter { width: 78px; height: 78px; }
+.container.site-size-medium .site-box__icon-letter { font-size: 34px; }
+.container.site-size-large .site-box__icon-letter { font-size: 40px; }
+.container.site-size-medium .site-box__icon-folder { width: 68px; height: 64px; }
+.container.site-size-large .site-box__icon-folder { width: 82px; height: 78px; }
+.container.site-size-medium .site-box__icon-folder svg { width: 52px; height: 45px; }
+.container.site-size-large .site-box__icon-folder svg { width: 64px; height: 55px; }
+.container.site-size-medium .site-box__label { max-width: 108px; }
+.container.site-size-large .site-box__label { max-width: 128px; }
+
+@media (max-width: 900px) {
+    .container.site-size-medium .draggable-grid,
+    .container.site-size-large .draggable-grid { grid-template-columns: repeat(auto-fill, 92px); gap: 24px 16px; }
+    .container.site-size-medium .site-box__icon-image,
+    .container.site-size-medium .site-box__icon-letter,
+    .container.site-size-large .site-box__icon-image,
+    .container.site-size-large .site-box__icon-letter { width: 62px; height: 62px; }
+    .container.site-size-medium .site-box__icon-folder,
+    .container.site-size-large .site-box__icon-folder { width: 66px; height: 62px; }
+}
+
+@media (max-width: 720px) {
+    .container.site-size-medium .draggable-grid,
+    .container.site-size-large .draggable-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 20px 8px; }
+    .container.site-size-medium .site-box__icon-image,
+    .container.site-size-medium .site-box__icon-letter,
+    .container.site-size-large .site-box__icon-image,
+    .container.site-size-large .site-box__icon-letter { width: 54px; height: 54px; }
 }
 
 /* Light surfaces must never inherit the white text/shadows used over wallpapers. */
@@ -1981,6 +2041,7 @@ body {
 .pomodoro-settings-toggle { cursor: pointer; }
 .pomodoro-settings-toggle .app-setting-checkbox { flex: 0 0 auto; }
 .pomodoro-settings-content .modal-actions-center { margin-top: 22px; }
+.pomodoro-settings-actions { align-items: center; justify-content: space-between; margin-top: 22px; }
 .pomodoro-settings-content .btn-primary { min-width: 150px; }
 
 /* Space Accent */

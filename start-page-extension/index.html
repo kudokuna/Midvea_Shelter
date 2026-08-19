@@ -249,7 +249,10 @@
                 </div>
                 <label class="pomodoro-settings-toggle"><span>Звуковой сигнал</span><input type="checkbox" id="settings-pomodoro-sound" class="app-setting-checkbox"></label>
                 <label class="pomodoro-settings-toggle"><span>Системное уведомление</span><input type="checkbox" id="settings-pomodoro-notifications" class="app-setting-checkbox"></label>
-                <div class="modal-actions-center"><button type="submit" class="btn-primary btn-outline">Сохранить</button></div>
+                <div class="modal-actions pomodoro-settings-actions">
+                    <button type="button" id="pomodoro-reset-sessions" class="btn-cancel">Сбросить сессии</button>
+                    <button type="submit" class="btn-primary btn-outline">Сохранить</button>
+                </div>
             </form>
         </div>
     </div>
@@ -664,6 +667,17 @@
                             <span>Открывать закладки в новой вкладке</span>
                             <input type="checkbox" id="settings-bookmarks-new-tab" class="app-setting-checkbox">
                         </label>
+                        <div class="app-setting-row app-setting-row--site-size">
+                            <span class="app-setting-copy"><strong>Размер иконок сайтов</strong><small>Размер сетки закладок</small></span>
+                            <div class="site-size-control" role="radiogroup" aria-label="Размер иконок сайтов">
+                                <input type="radio" id="settings-site-size-standard" name="site-icon-size" value="standard">
+                                <label for="settings-site-size-standard">Стандартный</label>
+                                <input type="radio" id="settings-site-size-medium" name="site-icon-size" value="medium">
+                                <label for="settings-site-size-medium">Средний</label>
+                                <input type="radio" id="settings-site-size-large" name="site-icon-size" value="large">
+                                <label for="settings-site-size-large">Большой</label>
+                            </div>
+                        </div>
                         <label class="app-setting-row">
                             <span class="app-setting-copy"><strong>Цвет иконок сайтов</strong><small>Для сайтов без собственной иконки</small></span>
                             <input type="color" id="settings-site-color" value="#64b5f6">

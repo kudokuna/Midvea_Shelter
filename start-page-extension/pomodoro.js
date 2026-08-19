@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsModal = document.getElementById('pomodoro-settings-modal');
     const settingsForm = document.getElementById('pomodoro-settings-form');
     const closeSettingsButton = document.getElementById('close-pomodoro-modal');
+    const resetSessionsButton = document.getElementById('pomodoro-reset-sessions');
     const settingsFields = {
         pomodoroFocusMinutes: document.getElementById('settings-pomodoro-focus'),
         pomodoroShortBreakMinutes: document.getElementById('settings-pomodoro-short-break'),
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resetButton.addEventListener('click', resetCurrentSession);
     settingsButton?.addEventListener('click', openSettingsModal);
     closeSettingsButton?.addEventListener('click', closeSettingsModal);
+    resetSessionsButton?.addEventListener('click', resetCompletedSessions);
     settingsModal?.addEventListener('click', event => {
         if (event.target === settingsModal) closeSettingsModal();
     });
@@ -146,6 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelAlarm(); persist(); render(); startTicker();
     }
 
+    function resetCompletedSessions() {
+        state.completed = 0;
+        persist();
+        render();
+    }
+
     function startTicker() {
         clearInterval(intervalId); intervalId = null;
         if (!state.running) return;
@@ -194,17 +202,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function playChime() {
         unlockAudio();
         if (!audioContext || audioContext.state !== 'running') return;
-        [0, .16, .34].forEach((delay, index) => {
+        const startedAt = audioContext.currentTime;
+        const duration = 5;
+        for (let delay = 0, index = 0; delay < duration; delay += .62, index += 1) {
             const oscillator = audioContext.createOscillator();
             const gain = audioContext.createGain();
-            oscillator.type = 'sine'; oscillator.frequency.value = [660, 880, 1040][index];
-            gain.gain.setValueAtTime(.0001, audioContext.currentTime + delay);
-            gain.gain.exponentialRampToValueAtTime(.16, audioContext.currentTime + delay + .02);
-            gain.gain.exponentialRampToValueAtTime(.0001, audioContext.currentTime + delay + .28);
+            const pulseDuration = Math.min(.48, duration - delay);
+            oscillator.type = 'sine'; oscillator.frequency.value = [660, 880, 1040][index % 3];
+            gain.gain.setValueAtTime(.0001, startedAt + delay);
+            gain.gain.exponentialRampToValueAtTime(.14, startedAt + delay + .02);
+            gain.gain.exponentialRampToValueAtTime(.0001, startedAt + delay + pulseDuration);
             oscillator.connect(gain).connect(audioContext.destination);
-            oscillator.start(audioContext.currentTime + delay);
-            oscillator.stop(audioContext.currentTime + delay + .3);
-        });
+            oscillator.start(startedAt + delay);
+            oscillator.stop(startedAt + delay + pulseDuration);
+        }
     }
 
     function persist() { chrome.storage.local.set({ [STORAGE_KEY]: state }); }
